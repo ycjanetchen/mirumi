@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mirumi</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><g transform='translate(16,16)'><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8'/><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8' transform='rotate(72)'/><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8' transform='rotate(144)'/><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8' transform='rotate(216)'/><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8' transform='rotate(288)'/><circle cx='0' cy='0' r='3.5' fill='%23C4788A'/></g></svg>" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Sans:wght@300;400;500&family=Quicksand:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  /* Spring base */
+  --bg:#fdf8f3;
+  --bg2:#faf3eb;
+  --surface:#ffffff;
+  --surface2:#fef9f4;
+  --border:#ecddd0;
+  --border-hi:#d4a882;
+  --text:#3d2e22;
+  --muted:#a8907c;
+  --dim:#7a6055;
+  --accent:#c8845a;
+  --accent-soft:rgba(200,132,90,0.12);
+  --accent-glow:rgba(200,132,90,0.22);
+
+  /* Mood palette - Muted Morandi */
+  --mood-happy:#E8D5A3;
+  --mood-touched:#A8B5A2;
+  --mood-calm:#B0ADB5;
+  --mood-excited:#D4B5B5;
+  --mood-sad:#9BAFC4;
+  --mood-hurt:#8E9BAE;
+  --mood-anxious:#B5A8C8;
+  --mood-angry:#C4A09A;
+  --mood-irritated:#C8B09A;
+
+  --shadow:rgba(100,60,30,0.08);
+  --shadow-md:rgba(100,60,30,0.13);
+}
+
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto Sans TC','Noto Sans',sans-serif;overflow-x:hidden}
+
+/* Spring ambient */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%,rgba(255,220,160,0.18) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 30% at 90% 20%,rgba(255,200,180,0.1) 0%,transparent 50%),
+    radial-gradient(ellipse 30% 25% at 5% 80%,rgba(200,220,180,0.08) 0%,transparent 50%);
+}
+
+/* Floating star decorations */
+.petal{position:fixed;pointer-events:none;z-index:0;opacity:0;animation:drift linear infinite}
+@keyframes drift{0%{opacity:0;transform:translateY(-20px) rotate(0deg)}10%{opacity:0.22}80%{opacity:0.12}100%{opacity:0;transform:translateY(105vh) rotate(360deg) translateX(15px)}}
+
+/* ── LANG SCREEN ── */
+#langScreen{position:fixed;inset:0;background:var(--bg);z-index:2000;display:flex;align-items:center;justify-content:center;flex-direction:column;animation:fadeUp 0.6s ease both}
+
+.ls-logo{font-family:'DM Serif Display',serif;font-size:58px;color:var(--accent);margin-bottom:6px;letter-spacing:-0.01em}
+.ls-sub{font-family:'Quicksand',sans-serif;font-size:13px;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:48px;text-align:center}
+.ls-flowers{margin-bottom:48px;display:flex;justify-content:center}
+.lang-choices{display:flex;gap:14px}
+.lang-btn{
+  padding:14px 36px;
+  background:var(--surface);border:1.5px solid var(--border);border-radius:50px;
+  color:var(--dim);font-family:'Quicksand',sans-serif;font-size:15px;font-weight:600;
+  cursor:pointer;transition:all 0.25s;letter-spacing:0.04em;
+}
+.lang-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);transform:translateY(-2px);box-shadow:0 6px 24px var(--accent-glow)}
+
+/* ── NAV ── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;height:58px;
+  background:rgba(253,248,243,0.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent);letter-spacing:0.01em}
+.nav-logo span{font-size:16px}
+.nav-pills{display:flex;gap:4px}
+.nav-pill{
+  padding:6px 16px;border-radius:20px;border:1.5px solid transparent;
+  background:none;font-family:'Quicksand',sans-serif;font-size:12px;font-weight:600;
+  color:var(--muted);cursor:pointer;transition:all 0.2s;letter-spacing:0.04em;
+}
+.nav-pill:hover{color:var(--dim);border-color:var(--border)}
+.nav-pill.active{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+.lang-toggle{
+  padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);
+  background:none;font-family:'Quicksand',sans-serif;font-size:10px;font-weight:700;
+  color:var(--muted);cursor:pointer;transition:all 0.2s;letter-spacing:0.1em;
+}
+.lang-toggle:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── PAGES ── */
+.page{display:none;position:relative;z-index:1}
+.page.active{display:block}
+.container{max-width:740px;margin:0 auto;padding:80px 24px 100px}
+
+/* ── HOME PAGE ── */
+.home-hero{text-align:center;padding:48px 0 40px;animation:fadeUp 0.7s ease both}
+.home-greeting{
+  font-family:'Quicksand',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;
+}
+.home-title{
+  font-family:'DM Serif Display',serif;font-size:clamp(38px,6vw,56px);
+  color:var(--text);line-height:1.1;margin-bottom:12px;
+}
+.home-title em{font-style:italic;color:var(--accent)}
+.home-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 36px}
+
+/* Big nav cards */
+.home-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+@media(max-width:520px){.home-cards{grid-template-columns:1fr}}
+.home-card{
+  padding:28px 24px;border-radius:16px;border:1.5px solid var(--border);
+  background:var(--surface);cursor:pointer;transition:all 0.25s;
+  text-align:left;position:relative;overflow:hidden;
+}
+.home-card::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.25s;background:radial-gradient(circle at top left,var(--card-tint,rgba(200,132,90,0.06)),transparent 70%)}
+.home-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 10px 36px var(--shadow-md)}
+.home-card:hover::after{opacity:1}
+.hc-icon{margin-bottom:14px;display:block;line-height:1}
+.hc-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:6px}
+.hc-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.hc-arrow{position:absolute;right:18px;bottom:18px;color:var(--border-hi);font-size:16px;transition:all 0.2s}
+.home-card:hover .hc-arrow{color:var(--accent);transform:translateX(3px)}
+
+/* Recent strip */
+.recent-strip{animation:fadeUp 0.7s 0.15s ease both}
+.strip-title{font-family:'Quicksand',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.recent-list{display:flex;flex-direction:column;gap:8px}
+.recent-item{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px;border-radius:12px;border:1.5px solid var(--border);
+  background:var(--surface);cursor:pointer;transition:all 0.2s;
+}
+.recent-item:hover{border-color:var(--accent);box-shadow:0 4px 16px var(--shadow)}
+.ri-mood-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ri-info{flex:1}
+.ri-title{font-size:13px;font-weight:500;color:var(--text)}
+.ri-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.ri-date{font-family:'Quicksand',sans-serif;font-size:10px;color:var(--muted);letter-spacing:0.05em;white-space:nowrap}
+
+/* ── JOURNAL PAGE ── */
+.page-header{margin-bottom:36px;animation:fadeUp 0.6s ease both}
+.ph-badge{
+  display:inline-block;font-family:'Quicksand',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);
+  background:var(--accent-soft);border:1.5px solid var(--accent);
+  padding:4px 14px;border-radius:20px;margin-bottom:16px;
+}
+.ph-title{font-family:'DM Serif Display',serif;font-size:36px;color:var(--text);line-height:1.15;margin-bottom:8px}
+.ph-title em{font-style:italic;color:var(--accent)}
+.ph-sub{font-size:13px;color:var(--muted);line-height:1.6}
+
+.field{margin-bottom:20px}
+.fl{display:block;font-family:'Quicksand',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.fl span{color:var(--accent);margin-right:5px}
+.ftx,.finp{
+  width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;
+  padding:13px 17px;font-family:'Noto Sans TC','Noto Sans',sans-serif;
+  font-size:14px;font-weight:300;color:var(--text);outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;letter-spacing:0.02em;resize:none;
+}
+.ftx{min-height:110px;line-height:1.85}
+.ftx::placeholder,.finp::placeholder{color:var(--muted);opacity:0.55;font-style:italic}
+.ftx:focus,.finp:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.fhint{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5}
+
+.go-btn{
+  width:100%;padding:15px;
+  background:var(--accent);color:#fff;border:none;border-radius:50px;
+  font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;
+  letter-spacing:0.04em;cursor:pointer;transition:all 0.22s;margin-top:8px;
+  box-shadow:0 4px 20px var(--accent-glow);
+}
+.go-btn:hover{background:#b8733d;transform:translateY(-1px);box-shadow:0 8px 28px var(--accent-glow)}
+.go-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* Loading */
+.loading{display:none;text-align:center;padding:70px 0}
+.loading.on{display:block}
+.lflower{animation:bloom 1.5s ease-in-out infinite;display:inline-block}
+@keyframes bloom{0%,100%{transform:scale(1) rotate(-5deg)}50%{transform:scale(1.15) rotate(5deg)}}
+.ltxt{font-family:'Quicksand',sans-serif;font-size:13px;color:var(--muted);margin-top:16px;letter-spacing:0.08em}
+
+/* ── RESULTS ── */
+.results{display:none}
+.results.on{display:block;animation:fadeUp 0.5s ease both}
+
+/* Mood banner */
+.mood-banner{
+  border-radius:16px;padding:24px 28px;margin-bottom:20px;
+  border:1.5px solid transparent;position:relative;overflow:hidden;
+  transition:background 0.5s,border-color 0.5s;
+}
+.mood-banner::before{content:'';position:absolute;inset:0;opacity:0.15;background:radial-gradient(ellipse at top right,white,transparent)}
+.mood-banner-top{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.mood-emoji-big{font-size:38px;line-height:1}
+.mood-name{font-family:'DM Serif Display',serif;font-size:24px;font-style:italic}
+.mood-body{font-size:13px;font-weight:300;line-height:1.85;opacity:0.85;white-space:pre-line}
+
+/* Result cards */
+.rcards{display:flex;flex-direction:column;gap:12px;margin-bottom:22px}
+.rcard{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:20px 22px;position:relative;overflow:hidden;
+  animation:fadeUp 0.5s ease both;
+}
+.rcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:2px}
+.rcard.praise::before{background:var(--mood-happy)}
+.rcard.feedback::before{background:var(--mood-touched)}
+.rcard.growth::before{background:var(--mood-excited)}
+/* Relationship cards */
+.rcard.emotion::before{background:var(--mood-excited)}
+.rcard.other::before{background:var(--mood-touched)}
+.rcard.advice::before{background:var(--mood-happy)}
+.rcard.warning::before{background:var(--mood-angry)}
+.rcard.trend::before{background:var(--mood-anxious)}
+
+.rlabel{
+  font-family:'Quicksand',sans-serif;font-size:9px;font-weight:700;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;
+}
+.rcard-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:8px;line-height:1.3}
+.rbody{font-size:13px;font-weight:300;color:var(--dim);line-height:1.9;white-space:pre-line;letter-spacing:0.02em}
+
+/* Trend bar */
+.trend-meter{margin-top:12px;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.trend-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--mood-hurt),var(--mood-happy));transition:width 1.2s ease}
+.trend-score-txt{font-family:'Quicksand',sans-serif;font-size:10px;color:var(--muted);margin-top:6px;font-weight:600}
+
+.save-bar{
+  background:rgba(168,181,162,0.18);border:1.5px solid rgba(168,181,162,0.5);
+  border-radius:10px;padding:12px 18px;font-family:'Quicksand',sans-serif;
+  font-size:12px;color:#7a9a74;text-align:center;margin-bottom:14px;
+  letter-spacing:0.05em;display:none;font-weight:600;
+}
+
+.btn-row{display:flex;gap:10px;margin-top:6px}
+.outline-btn{flex:1;padding:12px;background:none;color:var(--muted);border:1.5px solid var(--border);border-radius:50px;font-family:'Quicksand',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.outline-btn:hover{border-color:var(--accent);color:var(--accent)}
+.filled-btn{flex:1;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:50px;font-family:'Quicksand',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.filled-btn:hover{background:#b8733d}
+.err{font-size:12px;color:#b85050;background:rgba(184,80,80,0.08);border:1.5px solid rgba(184,80,80,0.2);border-radius:8px;padding:11px 16px;margin-top:10px;text-align:center;display:none}
+
+/* ── CATEGORY PILLS (relationship) ── */
+.cat-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;animation:fadeUp 0.6s 0.08s ease both}
+.cat-pill{
+  padding:8px 18px;border-radius:20px;border:1.5px solid var(--border);
+  background:var(--surface);font-family:'Quicksand',sans-serif;font-size:12px;font-weight:600;
+  color:var(--muted);cursor:pointer;transition:all 0.2s;
+}
+.cat-pill:hover{border-color:var(--accent);color:var(--dim)}
+.cat-pill.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.chip{padding:5px 13px;border-radius:16px;border:1.5px solid var(--border);background:var(--surface);font-family:'Quicksand',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.17s;user-select:none}
+.chip:hover{border-color:var(--accent);color:var(--dim)}
+.chip.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+
+/* person row */
+.person-row{display:flex;gap:8px}
+.person-row .finp{flex:1}
+.recent-btn-sm{
+  padding:13px 14px;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:10px;font-size:11px;color:var(--muted);white-space:nowrap;
+  cursor:pointer;transition:all 0.2s;font-family:'Quicksand',sans-serif;font-weight:600;
+}
+.recent-btn-sm:hover{border-color:var(--accent);color:var(--accent)}
+#recentDropdown{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;margin-top:5px;overflow:hidden;box-shadow:0 6px 24px var(--shadow-md)}
+
+/* ── ARCHIVE PAGE ── */
+.arch-tabs{display:flex;gap:10px;margin-bottom:28px;border-bottom:1.5px solid var(--border);padding-bottom:0}
+.arch-tab{
+  padding:10px 20px;border:none;background:none;
+  font-family:'Quicksand',sans-serif;font-size:13px;font-weight:600;
+  color:var(--muted);cursor:pointer;transition:all 0.2s;
+  border-bottom:2.5px solid transparent;margin-bottom:-2px;letter-spacing:0.03em;
+}
+.arch-tab:hover{color:var(--dim)}
+.arch-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.arch-list{display:flex;flex-direction:column;gap:10px}
+
+/* Journal archive item */
+.j-item{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:18px 20px;cursor:pointer;transition:all 0.22s;position:relative;
+  animation:fadeUp 0.4s ease both;
+}
+.j-item:hover{border-color:var(--accent);box-shadow:0 4px 20px var(--shadow);transform:translateY(-1px)}
+.j-item-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.j-mood-pill{
+  display:flex;align-items:center;gap:6px;
+  padding:4px 12px;border-radius:20px;font-family:'Quicksand',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:0.05em;
+}
+.j-date{font-family:'Quicksand',sans-serif;font-size:10px;color:var(--muted);font-weight:600;margin-left:auto;padding-right:4px}
+.j-summary{font-family:'Lora',serif;font-size:14px;font-style:italic;color:var(--text);margin-bottom:5px}
+.j-preview{font-size:11px;color:var(--muted);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.item-delete{
+  background:rgba(184,80,80,0.08);border:1px solid rgba(184,80,80,0.2);
+  color:#c05050;font-size:11px;font-weight:600;
+  cursor:pointer;padding:3px 8px;border-radius:6px;
+  font-family:'Quicksand',sans-serif;letter-spacing:0.04em;
+  transition:all 0.2s;flex-shrink:0;
+}
+.item-delete:hover{background:rgba(184,80,80,0.15);border-color:rgba(184,80,80,0.4)}
+
+.p-item{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:18px 20px 36px;cursor:pointer;transition:all 0.22s;position:relative;
+  animation:fadeUp 0.4s ease both;
+}
+.p-item:hover{border-color:var(--accent);box-shadow:0 4px 20px var(--shadow);transform:translateY(-1px)}
+.p-item-top{display:flex;align-items:center;gap:12px;margin-bottom:8px;padding-right:56px}
+.p-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--accent-soft);border:1.5px solid var(--accent);flex-shrink:0}
+.p-name{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text)}
+.p-cat{font-family:'Quicksand',sans-serif;font-size:10px;color:var(--muted);font-weight:600;background:var(--bg2);padding:3px 10px;border-radius:10px;border:1px solid var(--border)}
+.p-last{font-size:11px;color:var(--muted);margin-bottom:5px}
+.p-preview{font-size:11px;color:var(--muted);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.p-count{font-family:'Quicksand',sans-serif;font-size:9px;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-top:6px}
+
+.empty-state{text-align:center;padding:70px 20px}
+.empty-icon{opacity:0.3;margin-bottom:14px;display:block}
+.empty-txt{font-size:13px;color:var(--muted);line-height:1.7;font-family:'Quicksand',sans-serif}
+
+/* ── PERSON DETAIL ── */
+.back-btn{
+  background:none;border:1.5px solid var(--border);color:var(--muted);
+  border-radius:20px;padding:7px 16px;font-family:'Quicksand',sans-serif;
+  font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:24px;display:inline-block;
+}
+.back-btn:hover{border-color:var(--accent);color:var(--accent)}
+.detail-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1.5px solid var(--border)}
+.detail-avatar{width:52px;height:52px;border-radius:50%;background:var(--accent-soft);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px}
+.detail-name{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text)}
+.detail-meta{font-size:11px;color:var(--muted);margin-top:3px;font-family:'Quicksand',sans-serif;font-weight:600}
+
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;gap:16px;padding-bottom:24px;position:relative;animation:fadeUp 0.4s ease both}
+.tl-item::before{content:'';position:absolute;left:8px;top:22px;bottom:0;width:1px;background:var(--border)}
+.tl-item:last-child::before{display:none}
+.tl-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--accent);background:var(--surface);flex-shrink:0;margin-top:2px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;font-size:8px}
+.tl-body{flex:1}
+.tl-date{font-family:'Quicksand',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.tl-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all 0.2s;position:relative}
+.tl-card:hover{border-color:var(--accent)}
+.tl-mood{font-family:'Lora',serif;font-size:13px;font-style:italic;color:var(--accent);margin-bottom:5px}
+.tl-summary{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+.tl-preview{font-size:11px;color:var(--muted);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.tl-del{position:absolute;top:8px;right:10px;background:rgba(184,80,80,0.08);border:1px solid rgba(184,80,80,0.2);color:#c05050;font-size:10px;font-weight:600;cursor:pointer;padding:2px 7px;border-radius:5px;font-family:'Quicksand',sans-serif;transition:all 0.2s}
+.tl-del:hover{background:rgba(184,80,80,0.15)}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(61,46,34,0.4);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.on{display:flex}
+.modal{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;max-width:680px;width:100%;max-height:88vh;overflow-y:auto;padding:28px;box-shadow:0 20px 60px var(--shadow-md)}
+.modal-close{float:right;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:0;transition:color 0.2s}
+.modal-close:hover{color:var(--accent)}
+.modal-date{font-family:'Quicksand',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:block}
+.modal-orig{background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:18px}
+.modal-orig-label{font-family:'Quicksand',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.modal-orig-text{font-size:13px;font-weight:300;color:var(--dim);line-height:1.85;white-space:pre-line}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.rcard:nth-child(1){animation-delay:0.05s}
+.rcard:nth-child(2){animation-delay:0.1s}
+.rcard:nth-child(3){animation-delay:0.15s}
+.rcard:nth-child(4){animation-delay:0.2s}
+.rcard:nth-child(5){animation-delay:0.25s}
+</style>
+</head>
+<body>
+
+<!-- Floating tulips -->
+<div class="petal" style="left:5%;animation-duration:18s;animation-delay:0s"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 2 C12 7 7 12 2 12 C7 12 12 17 12 22 C12 17 17 12 22 12 C17 12 12 7 12 2Z" fill="#c8845a" opacity="0.45"/></svg></div>
+<div class="petal" style="left:18%;animation-duration:22s;animation-delay:3s"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 2 C12 7 7 12 2 12 C7 12 12 17 12 22 C12 17 17 12 22 12 C17 12 12 7 12 2Z" fill="#C4A060" opacity="0.35"/></svg></div>
+<div class="petal" style="left:35%;animation-duration:19s;animation-delay:7s"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 2 C12 7 7 12 2 12 C7 12 12 17 12 22 C12 17 17 12 22 12 C17 12 12 7 12 2Z" fill="#c8845a" opacity="0.40"/></svg></div>
+<div class="petal" style="left:55%;animation-duration:16s;animation-delay:5s"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 2 C12 7 7 12 2 12 C7 12 12 17 12 22 C12 17 17 12 22 12 C17 12 12 7 12 2Z" fill="#E0CC88" opacity="0.30"/></svg></div>
+<div class="petal" style="left:72%;animation-duration:21s;animation-delay:1s"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2 C12 7 7 12 2 12 C7 12 12 17 12 22 C12 17 17 12 22 12 C17 12 12 7 12 2Z" fill="#C4A060" opacity="0.38"/></svg></div>
+<div class="petal" style="left:88%;animation-duration:24s;animation-delay:9s"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 2 C12 7 7 12 2 12 C7 12 12 17 12 22 C12 17 17 12 22 12 C17 12 12 7 12 2Z" fill="#c8845a" opacity="0.35"/></svg></div>
+
+<!-- ── LANG SCREEN ── -->
+<div id="langScreen">
+  <div class="ls-logo" style="display:flex;align-items:center;gap:18px;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M12 2L13.4 9.6L22 12L13.4 14.4L12 22L10.6 14.4L2 12L10.6 9.6Z" fill="#c8845a"/></svg>Mirumi<svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M12 2L13.4 9.6L22 12L13.4 14.4L12 22L10.6 14.4L2 12L10.6 9.6Z" fill="#c8845a"/></svg></div>
+  <div class="ls-sub">See yourself clearly</div>
+
+  <div class="lang-choices">
+    <button class="lang-btn" onclick="setLang('zh')">繁體中文</button>
+    <button class="lang-btn" onclick="setLang('en')">English</button>
+  </div>
+</div>
+
+
+
+<!-- ── NAV ── -->
+<nav class="nav" id="mainNav" style="display:none">
+  <div class="nav-logo">Mirumi <span><svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(16,16)"><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(72)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(144)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(216)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(288)"/><circle cx="0" cy="0" r="3.5" fill="#C4788A"/></g></svg></span></div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <div class="nav-pills">
+      <button class="nav-pill active" onclick="showPage('home')" id="navHome" data-t="nav_home">首頁</button>
+      <button class="nav-pill" onclick="showPage('journal')" id="navJournal" data-t="nav_journal">今日日記</button>
+      <button class="nav-pill" onclick="showPage('relationship')" id="navRelation" data-t="nav_relation">關係分析</button>
+      <button class="nav-pill" onclick="showPage('archive')" id="navArchive" data-t="nav_archive">回顧</button>
+    </div>
+    <button class="lang-toggle" onclick="toggleLang()" id="langToggleBtn">EN</button>
+  </div>
+</nav>
+
+<!-- ══ HOME PAGE ══ -->
+<div class="page" id="page-home">
+<div class="container">
+  <div class="home-hero">
+    <div class="home-greeting" id="homeGreeting">早安，今天也要好好的</div>
+    <h1 class="home-title" data-t="home_title_html">今天的你，<em>好嗎？</em></h1>
+    <p class="home-sub" data-t="home_sub">記錄心情、洞察關係，每一天都值得被好好看見</p>
+  </div>
+
+  <div class="home-cards">
+    <div class="home-card" style="--card-tint:rgba(232,213,163,0.15)" onclick="showPage('journal')">
+      <span class="hc-icon"><svg width="36" height="36" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="21" height="28" rx="5" fill="#a8907c"/><rect x="7" y="7" width="9" height="3.5" rx="1.75" fill="#fdf8f3"/><circle cx="26.5" cy="10" r="2" fill="#c8b09a"/><circle cx="26.5" cy="16" r="2" fill="#c8b09a"/><circle cx="26.5" cy="22" r="2" fill="#c8b09a"/></svg></span>
+      <div class="hc-title" data-t="hc_journal">今日日記</div>
+      <div class="hc-desc" data-t="hc_journal_desc">寫下今天，讓 AI 解讀你的心情、給你鼓勵與回饋</div>
+      <span class="hc-arrow">→</span>
+    </div>
+    <div class="home-card" style="--card-tint:rgba(168,181,162,0.12)" onclick="showPage('relationship')">
+      <span class="hc-icon"><svg width="44" height="32" viewBox="0 0 44 34" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="40" height="22" rx="11" fill="#C4A09A"/><path d="M10 23L6 32L20 24Z" fill="#C4A09A"/><circle cx="15" cy="13" r="2.5" fill="#fdf8f3"/><circle cx="22" cy="13" r="2.5" fill="#fdf8f3"/><circle cx="29" cy="13" r="2.5" fill="#fdf8f3"/></svg></span>
+      <div class="hc-title" data-t="hc_relation">關係分析</div>
+      <div class="hc-desc" data-t="hc_relation_desc">描述一段關係，深度解讀五個維度，看清楚看明白</div>
+      <span class="hc-arrow">→</span>
+    </div>
+  </div>
+
+  <div class="recent-strip">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div class="strip-title" data-t="recent_title" style="margin-bottom:0">最近的紀錄</div><svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M12 2L13.4 9.6L22 12L13.4 14.4L12 22L10.6 14.4L2 12L10.6 9.6Z" fill="#c8845a" opacity="0.65"/></svg></div>
+    <div id="homeRecentList"></div>
+  </div>
+</div>
+</div>
+
+<!-- ══ JOURNAL PAGE ══ -->
+<div class="page" id="page-journal">
+<div class="container">
+  <div class="page-header">
+    <span class="ph-badge" data-t="j_badge">Daily Journal</span>
+    <h2 class="ph-title" data-t="j_title_html">今日的你，<em>很不錯</em></h2>
+    <p class="ph-sub" data-t="j_sub">寫下今天發生的事，讓我們一起回望這一天</p>
+  </div>
+
+
+  <div id="jForm">
+    <div class="field">
+      <label class="fl"><span>✦</span><span data-t="j_fl1">今天發生了什麼？</span></label>
+      <textarea class="ftx" id="jInput" rows="5" data-placeholder-t="j_ph1"></textarea>
+      <div class="fhint" id="jCharHint" data-t="j_hint">盡量寫，越多越好</div>
+    </div>
+    <button class="go-btn" onclick="runJournal()" data-t="j_btn">讓今天被好好看見 →</button>
+    <div class="err" id="jErr"></div>
+  </div>
+
+  <div class="loading" id="jLoading">
+    <div class="lflower"><svg width="40" height="40" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(16,16)"><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(72)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(144)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(216)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(288)"/><circle cx="0" cy="0" r="3.5" fill="#C4788A"/></g></svg></div>
+    <div class="ltxt" data-t="j_loading">正在閱讀你的今天⋯⋯</div>
+  </div>
+
+  <div class="results" id="jResults">
+    <div class="save-bar" id="jSaveBanner"></div>
+    <div class="mood-banner" id="jMoodBanner">
+      <div class="mood-banner-top">
+        <span class="mood-emoji-big" id="jMoodEmoji">🌸</span>
+        <span class="mood-name" id="jMoodLabel"></span>
+      </div>
+      <div class="mood-body" id="jMoodBody"></div>
+    </div>
+    <div class="rcards" id="jCards"></div>
+    <div class="btn-row">
+      <button class="outline-btn" onclick="resetJournal()" data-t="j_new">← 新的記錄</button>
+      <button class="filled-btn" onclick="showPage('archive')" data-t="j_archive">查看回顧 →</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ RELATIONSHIP PAGE ══ -->
+<div class="page" id="page-relationship">
+<div class="container">
+  <div class="page-header">
+    <span class="ph-badge" data-t="r_badge">Relationship Insight</span>
+    <h2 class="ph-title" data-t="r_title_html">你想看清的<em>人際問題</em></h2>
+    <p class="ph-sub" data-t="r_sub">描述你的情況，深度分析五個維度：情緒、對方視角、具體建議、警示紅線、關係趨勢</p>
+  </div>
+
+  <div id="rForm">
+    <div class="cat-pills" id="catPills"></div>
+
+    <!-- 01 這個人是誰 + 性別 + MBTI -->
+    <div class="field">
+      <label class="fl"><span>01</span><span data-t="r_fl1">這個人是誰？</span></label>
+      <div class="person-row">
+        <input class="finp" id="rPersonName" data-placeholder-t="r_ph1">
+        <button class="recent-btn-sm" onclick="showRecentPeople()" data-t="r_recent">最近的人</button>
+      </div>
+      <div id="recentDropdown" style="display:none"></div>
+
+      <!-- Gender row -->
+      <div style="display:flex;align-items:center;gap:10px;margin-top:14px;margin-bottom:8px">
+        <span style="font-family:'Quicksand',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap" data-t="r_gender_label">性別</span>
+        <div class="chips" id="rGenderChips" style="margin-top:0;flex-wrap:nowrap"></div>
+      </div>
+
+      <!-- MBTI row -->
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-family:'Quicksand',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap" data-t="mbti_label">MBTI（選填）</span>
+        <select id="rMBTI" class="finp" style="min-height:unset;padding:8px 14px;font-size:13px;width:auto;font-family:'Quicksand',sans-serif;font-weight:600;cursor:pointer;flex-shrink:0"></select>
+      </div>
+    </div>
+
+    <!-- 02 對方個性 + chips + 自由描述 -->
+    <div class="field">
+      <label class="fl"><span>02</span><span data-t="r_fl3">對方是個怎樣的人？</span></label>
+      <div class="chips" id="rChips"></div>
+      <textarea class="ftx" id="rPersonDesc" rows="2" data-placeholder-t="r_ph3" style="margin-top:12px"></textarea>
+    </div>
+
+    <!-- 03 發生了什麼事 -->
+    <div class="field">
+      <label class="fl"><span>03</span><span data-t="r_fl2">發生了什麼事？</span></label>
+      <textarea class="ftx" id="rSituation" rows="4" data-placeholder-t="r_ph2"></textarea>
+    </div>
+
+    <!-- 04 你最想達成的是 -->
+    <div class="field">
+      <label class="fl"><span>04</span><span data-t="r_fl4">你最想達成的是？</span></label>
+      <input class="finp" id="rGoal" data-placeholder-t="r_ph4">
+    </div>
+
+    <button class="go-btn" onclick="runRelation()" data-t="r_btn">深度分析這段關係 →</button>
+    <div class="err" id="rErr"></div>
+  </div>
+
+  <div class="loading" id="rLoading">
+    <div class="lflower"><svg width="40" height="40" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 20C16 20 8 17 8 10C8 6.5 10 4.5 13 4.5C14.5 4.5 15.5 5.2 16 6C16.5 5.2 17.5 4.5 19 4.5C22 4.5 24 6.5 24 10C24 17 16 20 16 20Z" fill="#D4A0A8"/><path d="M13.5 7C12.8 8.5 13 11 14 12" stroke="#B8788A" stroke-width="1.2" stroke-linecap="round" fill="none"/><line x1="16" y1="20" x2="16" y2="30" stroke="#A8B5A2" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+    <div class="ltxt" data-t="r_loading">正在深度解讀這段關係⋯⋯</div>
+  </div>
+
+  <div class="results" id="rResults">
+    <div class="save-bar" id="rSaveBanner"></div>
+    <div class="page-header" style="margin-bottom:20px">
+      <span class="res-tag" style="font-family:'Quicksand',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent)" data-t="r_done">分析完成</span>
+      <div style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);margin-top:8px" id="rSummaryTitle"></div>
+    </div>
+    <div class="rcards" id="rCards"></div>
+    <div class="btn-row">
+      <button class="outline-btn" onclick="resetRelation()" data-t="r_new">← 新的分析</button>
+      <button class="filled-btn" onclick="showPage('archive');switchArchiveTab('people')" data-t="r_archive">查看關係檔案 →</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ ARCHIVE PAGE ══ -->
+<div class="page" id="page-archive">
+<div class="container">
+  <div class="page-header">
+    <span class="ph-badge" data-t="arch_badge">Archive</span>
+    <h2 class="ph-title" data-t="arch_title_html">你走過的<em>每一天</em></h2>
+  </div>
+  <div class="arch-tabs">
+    <button class="arch-tab active" id="archTabJournal" onclick="switchArchiveTab('journal')" data-t="arch_tab_j">日記</button>
+    <button class="arch-tab" id="archTabPeople" onclick="switchArchiveTab('people')" data-t="arch_tab_p">關係檔案</button>
+  </div>
+  <div id="archContent"></div>
+</div>
+</div>
+
+<!-- ══ PERSON DETAIL PAGE ══ -->
+<div class="page" id="page-detail">
+<div class="container">
+  <button class="back-btn" onclick="showPage('archive');switchArchiveTab('people')" data-t="back">← 返回</button>
+  <div class="detail-header">
+    <div class="detail-avatar" id="detailAvatar"></div>
+    <div>
+      <div class="detail-name" id="detailName"></div>
+      <div class="detail-meta" id="detailMeta"></div>
+    </div>
+  </div>
+  <div class="timeline" id="timelineEl"></div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <span class="modal-date" id="modalDate"></span>
+    <div class="modal-orig">
+      <div class="modal-orig-label" data-t="modal_orig_label">原始記錄</div>
+      <div class="modal-orig-text" id="modalOrig"></div>
+    </div>
+    <div id="modalCards"></div>
+  </div>
+</div>
+
+<script>
+// ── API Key — add your Anthropic key here ──
+const API_KEY = '';
+
+// ══ i18n ══
+const T={
+  zh:{
+    nav_home:'首頁',nav_journal:'今日日記',nav_relation:'關係分析',nav_archive:'回顧',
+    home_title_html:'今天的你，<em>好嗎？</em>',
+    home_sub:'記錄心情、洞察關係，每一天都值得被好好看見',
+    hc_journal:'今日日記',hc_journal_desc:'寫下今天，讓 AI 解讀你的心情、給你鼓勵與回饋',
+    hc_relation:'關係分析',hc_relation_desc:'描述一段關係，深度解讀五個維度，看清楚看明白',
+    recent_title:'最近的紀錄',
+    j_badge:'Daily Journal',j_title_html:'今日的你，<em>很不錯</em>',
+    j_sub:'寫下今天發生的事，讓我們一起回望這一天',
+    j_fl1:'今天發生了什麼？',j_ph1:'不管大事小事都可以寫，心情、遇到的人、讓你開心或煩惱的事……',
+    j_hint:'盡量寫，越多越好',j_btn:'讓今天被好好看見 →',
+    j_loading:'正在閱讀你的今天⋯⋯',j_new:'← 新的記錄',j_archive:'查看回顧 →',
+    j_saved:'✓ 已儲存到日記本',j_err:'請多寫幾句話',
+    r_badge:'Relationship Insight',r_title_html:'你想看清的<em>人際問題</em>',
+    r_sub:'描述你的情況，深度分析五個維度：情緒、對方視角、具體建議、警示紅線、關係趨勢',
+    r_fl1:'這個人是誰？',r_ph1:'輸入名字或暱稱',
+    r_fl2:'發生了什麼事？',r_ph2:'描述背景、事件、目前狀態⋯⋯越詳細越好',
+    r_fl3:'對方是個怎樣的人？',r_ph3:'個性、說話方式、你們的互動模式',
+    r_fl4:'你最想達成的是？',r_ph4:'例如：讓他理解我、修復關係、表達不滿',
+    r_recent:'最近的人',r_btn:'深度分析這段關係 →',
+    r_loading:'正在深度解讀這段關係⋯⋯',
+    r_done:'分析完成',r_new:'← 新的分析',r_archive:'查看關係檔案 →',
+    r_saved:'✓ 已儲存到關係檔案',r_err_name:'請輸入對方的名字',r_err_sit:'請多描述一點情況',
+    arch_badge:'Archive',arch_title_html:'你走過的<em>每一天</em>',
+    arch_tab_j:'日記',arch_tab_p:'關係檔案',
+    back:'← 返回',modal_orig_label:'你當時說的',
+    entries:'次紀錄',no_j:'還沒有日記記錄，去寫下今天吧',no_p:'還沒有關係記錄，去分析一段關係吧',
+    del_entry:'確定刪除這筆記錄嗎？',del_person:'確定刪除這個人的所有記錄嗎？',
+    cats:[{id:'love',icon:`<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M10 17C10 17 1.5 12 1.5 6C1.5 3.2 3.5 1.5 5.8 1.5C7.2 1.5 8.5 2.3 10 3.8C11.5 2.3 12.8 1.5 14.2 1.5C16.5 1.5 18.5 3.2 18.5 6C18.5 12 10 17 10 17Z" fill="#B8788A"/></svg>`,name:'愛情'},{id:'friendship',icon:`<svg width="24" height="20" viewBox="0 0 30 22" fill="none" style="vertical-align:middle"><circle cx="9" cy="5" r="4" fill="#a8907c"/><path d="M3 21C3 15 6 12 9 12C12 12 15 15 15 21Z" fill="#a8907c"/><circle cx="21" cy="5" r="4" fill="#c0a890"/><path d="M15 21C15 15 18 12 21 12C24 12 27 15 27 21Z" fill="#c0a890"/></svg>`,name:'友情'},{id:'work',icon:`<svg width="20" height="18" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><rect x="1" y="7" width="20" height="12" rx="3" fill="#a8907c"/><path d="M8 7V5C8 4 8.8 3 11 3C13.2 3 14 4 14 5V7" stroke="#c8b09a" stroke-width="1.8" stroke-linecap="round" fill="none"/><line x1="1" y1="12" x2="21" y2="12" stroke="#8a7060" stroke-width="1"/></svg>`,name:'職場'},{id:'family',icon:`<svg width="20" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M11 1L21.5 9H0.5L11 1Z" fill="#A8B5A2"/><rect x="2" y="9" width="18" height="10" rx="2" fill="#e8d5c0"/><rect x="8.5" y="13" width="5" height="6" rx="1" fill="#a8907c"/></svg>`,name:'家庭'}],
+    gender:['男生','女生','不確定'],
+    r_gender_label:'性別',
+    chips:['話不多','很直接','情緒化','理性冷靜','容易緊張','幽默風趣','不善表達','有點驕傲','非常溫柔','固執己見','敏感細膩','獨立自主','依賴性強','很有主見','樂觀開朗','悲觀消極','重視面子','很有野心','害羞內向','外向活潑','喜歡掌控','被動等待','容易焦慮','非常理智','浪漫感性','現實主義','慷慨大方','比較自私','善解人意','缺乏同理心'],
+    mbti_label:'MBTI（選填）',mbti_default:'不知道',
+    j_praise:'你值得被看見',j_feedback:'給你的一點回饋',j_growth:'成為更好的自己',
+    j_people_detected:'偵測到的關係人物',j_people_hint:'勾選的人物歷史將一起帶入分析，讓建議更準確',
+    r_emotion:'情緒解讀',r_other:'對方的視角',r_advice:'具體建議',r_warning:'警示紅線',r_trend:'關係趨勢',
+    trend_health:'關係健康度',
+    greet_morning:'早安，今天也要好好的 <svg width="13" height="13" viewBox="0 0 32 32" fill="none" style="vertical-align:middle;display:inline-block"><circle cx="16" cy="16" r="5.5" fill="#c8845a"/><rect x="14.5" y="1.5" width="3" height="5" rx="1.5" fill="#c8845a"/><rect x="14.5" y="25.5" width="3" height="5" rx="1.5" fill="#c8845a"/><rect x="25.5" y="14.5" width="5" height="3" rx="1.5" fill="#c8845a"/><rect x="1.5" y="14.5" width="5" height="3" rx="1.5" fill="#c8845a"/><rect x="22" y="5.5" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(45 22 5.5)"/><rect x="4.5" y="21" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(45 4.5 21)"/><rect x="22" y="21" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(-45 22 21)"/><rect x="4.5" y="5.5" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(-45 4.5 5.5)"/></svg>',greet_afternoon:'午安，記得吃飯喔 <svg width="11" height="14" viewBox="0 0 24 32" fill="none" style="vertical-align:middle;display:inline-block"><line x1="12" y1="32" x2="12" y2="8" stroke="#a8907c" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="8" cy="20" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(-30 8 20)"/><ellipse cx="16" cy="16" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(30 16 16)"/><ellipse cx="8" cy="12" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(-20 8 12)"/><ellipse cx="16" cy="8" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(20 16 8)"/></svg>',greet_evening:'晚安，今天辛苦了 <svg width="14" height="14" viewBox="0 0 32 32" fill="none" style="vertical-align:middle;display:inline-block"><path d="M20 5C11 4 4 9 4 16C4 23 11 28 20 27C16 25 14 21 14 16C14 11 16 7 20 5Z" fill="#F5D870"/><path d="M20 5C11 4 4 9 4 16C4 23 11 28 20 27C16 25 14 21 14 16C14 11 16 7 20 5Z" fill="none" stroke="#C8A020" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+  },
+  en:{
+    nav_home:'Home',nav_journal:'Journal',nav_relation:'Relationships',nav_archive:'Archive',
+    home_title_html:'How are you <em>today?</em>',
+    home_sub:'Track your mood, understand your relationships — every day deserves to be seen.',
+    hc_journal:'Daily Journal',hc_journal_desc:'Write about your day. AI reads your mood and cheers you on.',
+    hc_relation:'Relationship Insight',hc_relation_desc:'Describe a relationship. Get a 5-dimension deep analysis.',
+    recent_title:'Recent entries',
+    j_badge:'Daily Journal',j_title_html:'Well Done! You <em>survived today!</em>',
+    j_sub:'Write about your day and let\'s look back on it together.',
+    j_fl1:'What happened today?',j_ph1:'Big things, small things, feelings, people you met, anything on your mind…',
+    j_hint:'Write as much as you like',j_btn:'Let today be seen →',
+    j_loading:'Reading your day…',j_new:'← New entry',j_archive:'View archive →',
+    j_saved:'✓ Saved to journal',j_err:'Write a little more, even a few sentences',
+    r_badge:'Relationship Insight',r_title_html:'The things <em>you\'d like to discover</em>',
+    r_sub:'Describe your situation. 5-dimension deep analysis: emotions, their view, advice, red flags, trajectory.',
+    r_fl1:'Who is this person?',r_ph1:'Enter a name or nickname',
+    r_fl2:'What happened?',r_ph2:'Describe the background, the event, the current state — more detail = better analysis',
+    r_fl3:'What is this person like?',r_ph3:'Personality, communication style, your dynamic',
+    r_fl4:'What do you most want to achieve?',r_ph4:'e.g. Be understood, repair the relationship, set a boundary',
+    r_recent:'Recent people',r_btn:'Analyze this relationship →',
+    r_loading:'Reading between the lines…',
+    r_done:'Analysis Complete',r_new:'← New analysis',r_archive:'View archive →',
+    r_saved:'✓ Saved to archive',r_err_name:'Please enter a name',r_err_sit:'Please describe the situation more',
+    arch_badge:'Archive',arch_title_html:'The days that <em>made you</em>',
+    arch_tab_j:'Journal',arch_tab_p:'Relationships',
+    back:'← Back',modal_orig_label:'Your original entry',
+    entries:'entries',no_j:'No journal entries yet. Write about today',no_p:'No relationship records yet. Analyze one',
+    del_entry:'Delete this entry?',del_person:'Delete all entries for this person?',
+    cats:[{id:'love',icon:`<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M10 17C10 17 1.5 12 1.5 6C1.5 3.2 3.5 1.5 5.8 1.5C7.2 1.5 8.5 2.3 10 3.8C11.5 2.3 12.8 1.5 14.2 1.5C16.5 1.5 18.5 3.2 18.5 6C18.5 12 10 17 10 17Z" fill="#B8788A"/></svg>`,name:'Romantic'},{id:'friendship',icon:`<svg width="24" height="20" viewBox="0 0 30 22" fill="none" style="vertical-align:middle"><circle cx="9" cy="5" r="4" fill="#a8907c"/><path d="M3 21C3 15 6 12 9 12C12 12 15 15 15 21Z" fill="#a8907c"/><circle cx="21" cy="5" r="4" fill="#c0a890"/><path d="M15 21C15 15 18 12 21 12C24 12 27 15 27 21Z" fill="#c0a890"/></svg>`,name:'Friendship'},{id:'work',icon:`<svg width="20" height="18" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><rect x="1" y="7" width="20" height="12" rx="3" fill="#a8907c"/><path d="M8 7V5C8 4 8.8 3 11 3C13.2 3 14 4 14 5V7" stroke="#c8b09a" stroke-width="1.8" stroke-linecap="round" fill="none"/><line x1="1" y1="12" x2="21" y2="12" stroke="#8a7060" stroke-width="1"/></svg>`,name:'Work'},{id:'family',icon:`<svg width="20" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M11 1L21.5 9H0.5L11 1Z" fill="#A8B5A2"/><rect x="2" y="9" width="18" height="10" rx="2" fill="#e8d5c0"/><rect x="8.5" y="13" width="5" height="6" rx="1" fill="#a8907c"/></svg>`,name:'Family'}],
+    gender:['Male','Female','Not sure'],
+    r_gender_label:'Gender',
+    chips:['Quiet','Blunt','Emotional','Logical','Anxious','Funny','Guarded','Proud','Very gentle','Stubborn','Sensitive','Independent','Dependent','Opinionated','Optimistic','Pessimistic','Face-conscious','Ambitious','Shy','Outgoing','Controlling','Passive','Easily worried','Very rational','Romantic','Realistic','Generous','Self-centred','Empathetic','Lacks empathy'],
+    mbti_label:'MBTI (optional)',mbti_default:'Not sure',
+    j_praise:'You deserve to be seen',j_feedback:'A little feedback',j_growth:'Growing into yourself',
+    j_people_detected:'People detected in your entry',j_people_hint:'Selected people\'s full history will be included in the analysis for more accurate advice',
+    r_emotion:'Emotional Reading',r_other:"Their Perspective",r_advice:'Actionable Advice',r_warning:'Red Flags',r_trend:'Relationship Trajectory',
+    trend_health:'Relationship Health',
+    greet_morning:'Good morning <svg width="13" height="13" viewBox="0 0 32 32" fill="none" style="vertical-align:middle;display:inline-block"><circle cx="16" cy="16" r="5.5" fill="#c8845a"/><rect x="14.5" y="1.5" width="3" height="5" rx="1.5" fill="#c8845a"/><rect x="14.5" y="25.5" width="3" height="5" rx="1.5" fill="#c8845a"/><rect x="25.5" y="14.5" width="5" height="3" rx="1.5" fill="#c8845a"/><rect x="1.5" y="14.5" width="5" height="3" rx="1.5" fill="#c8845a"/><rect x="22" y="5.5" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(45 22 5.5)"/><rect x="4.5" y="21" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(45 4.5 21)"/><rect x="22" y="21" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(-45 22 21)"/><rect x="4.5" y="5.5" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(-45 4.5 5.5)"/></svg>',greet_afternoon:'Good afternoon <svg width="11" height="14" viewBox="0 0 24 32" fill="none" style="vertical-align:middle;display:inline-block"><line x1="12" y1="32" x2="12" y2="8" stroke="#a8907c" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="8" cy="20" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(-30 8 20)"/><ellipse cx="16" cy="16" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(30 16 16)"/><ellipse cx="8" cy="12" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(-20 8 12)"/><ellipse cx="16" cy="8" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(20 16 8)"/></svg>',greet_evening:'Good evening <svg width="14" height="14" viewBox="0 0 32 32" fill="none" style="vertical-align:middle;display:inline-block"><path d="M20 5C11 4 4 9 4 16C4 23 11 28 20 27C16 25 14 21 14 16C14 11 16 7 20 5Z" fill="#F5D870"/><path d="M20 5C11 4 4 9 4 16C4 23 11 28 20 27C16 25 14 21 14 16C14 11 16 7 20 5Z" fill="none" stroke="#C8A020" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+  }
+};
+
+const MOOD_COLORS={
+  happy:'#E8D5A3',touched:'#A8B5A2',calm:'#B0ADB5',excited:'#D4B5B5',
+  sad:'#9BAFC4',hurt:'#8E9BAE',anxious:'#B5A8C8',angry:'#C4A09A',irritated:'#C8B09A'
+};
+const MOOD_NAMES_ZH={happy:'開心愉快',touched:'感動幸福',calm:'平靜平和',excited:'期待雀躍',sad:'低落難過',hurt:'委屈傷心',anxious:'焦慮不安',angry:'憤怒',irritated:'煩躁壓抑'};
+const MOOD_NAMES_EN={happy:'Happy',touched:'Touched',calm:'Calm',excited:'Excited',sad:'Sad',hurt:'Hurt',anxious:'Anxious',angry:'Angry',irritated:'Irritated'};
+const MOOD_EMOJIS={happy:'😊',touched:'🥰',calm:'😌',excited:'🌸',sad:'😔',hurt:'😢',anxious:'😟',angry:'😠',irritated:'😤'};
+
+const J_KEY='mirumi_journal';
+const R_KEY='mirumi_relations';
+let lang='zh';
+let currentCat=null;
+
+// ── Storage ──
+function getJournals(){try{return JSON.parse(localStorage.getItem(J_KEY))||[];}catch{return[]}}
+function saveJournal(e){const a=getJournals();a.unshift(e);localStorage.setItem(J_KEY,JSON.stringify(a))}
+function deleteJournal(id){const a=getJournals().filter(e=>String(e.id)!==String(id));localStorage.setItem(J_KEY,JSON.stringify(a))}
+function getRelations(){try{return JSON.parse(localStorage.getItem(R_KEY))||{};}catch{return{}}}
+function saveRelation(name,e){const s=getRelations();if(!s[name])s[name]=[];s[name].unshift(e);localStorage.setItem(R_KEY,JSON.stringify(s))}
+function deleteRelEntry(name,id){const s=getRelations();if(s[name])s[name]=s[name].filter(e=>String(e.id)!==String(id));if(s[name]&&!s[name].length)delete s[name];localStorage.setItem(R_KEY,JSON.stringify(s))}
+function deleteRelPerson(name){const s=getRelations();delete s[name];localStorage.setItem(R_KEY,JSON.stringify(s))}
+
+// ── Lang ──
+function setLang(l){
+  lang=l;
+  document.getElementById('langScreen').style.display='none';
+  document.getElementById('mainNav').style.display='flex';
+  document.getElementById('langToggleBtn').textContent=lang==='zh'?'EN':'中';
+  applyLang();buildCats();buildChips();setGreeting();
+  showPage('home');
+}
+function toggleLang(){lang=lang==='zh'?'en':'zh';document.getElementById('langToggleBtn').textContent=lang==='zh'?'EN':'中';applyLang();buildCats();buildChips();setGreeting();renderHomeRecent();}
+function t(k){return T[lang][k]||T.zh[k]||k}
+function applyLang(){
+  document.querySelectorAll('[data-t]').forEach(el=>{const k=el.getAttribute('data-t');const v=t(k);if(k.endsWith('_html'))el.innerHTML=v;else el.textContent=v;});
+  document.querySelectorAll('[data-placeholder-t]').forEach(el=>{el.placeholder=t(el.getAttribute('data-placeholder-t'));});
+}
+function setGreeting(){
+  const h=new Date().getHours();
+  const key=h<12?'greet_morning':h<18?'greet_afternoon':'greet_evening';
+  document.getElementById('homeGreeting').innerHTML=t(key);
+}
+function buildCats(){
+  document.getElementById('catPills').innerHTML=T[lang].cats.map(c=>`<div class="cat-pill${currentCat===c.id?' sel':''}" data-cat="${c.id}" onclick="selCat(this)">${c.icon} ${c.name}</div>`).join('');
+}
+function buildChips(){
+  // Personality chips
+  document.getElementById('rChips').innerHTML=T[lang].chips.map(c=>`<div class="chip" onclick="toggleChip(this)">${c}</div>`).join('');
+  // Gender chips (single select)
+  document.getElementById('rGenderChips').innerHTML=T[lang].gender.map(g=>`<div class="chip" onclick="selectGender(this)" data-gender="${g}">${g}</div>`).join('');
+  // MBTI dropdown
+  const mbtiTypes=['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'];
+  const defaultOpt=t('mbti_default');
+  document.getElementById('rMBTI').innerHTML=`<option value="">${defaultOpt}</option>`+mbtiTypes.map(m=>`<option value="${m}">${m}</option>`).join('');
+}
+function selCat(el){document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');currentCat=el.dataset.cat;}
+function toggleChip(el){el.classList.toggle('sel');}
+function selectGender(el){
+  document.querySelectorAll('#rGenderChips .chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+// ── Recent people dropdown ──
+function showRecentPeople(){
+  const dd=document.getElementById('recentDropdown');
+  if(dd.style.display!=='none'){dd.style.display='none';return}
+  const ppl=Object.keys(getRelations());
+  if(!ppl.length){dd.style.display='none';return}
+  dd.innerHTML=ppl.map(p=>`<div style="padding:10px 16px;font-size:13px;color:var(--dim);cursor:pointer;transition:background 0.15s;font-family:'Noto Sans TC',sans-serif" onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background=''" onclick="pickPerson('${p.replace(/'/g,"\\'")}')">${p}</div>`).join('');
+  dd.style.display='block';
+}
+function pickPerson(n){
+  document.getElementById('rPersonName').value=n;
+  document.getElementById('recentDropdown').style.display='none';
+
+  // Auto-fill from latest saved entry for this person
+  const store=getRelations();
+  const entries=store[n]||[];
+  if(!entries.length)return;
+  const latest=entries[0]; // most recent
+
+  // Fill personDesc
+  document.getElementById('rPersonDesc').value=latest.personDesc||'';
+
+  // Fill category pill
+  if(latest.catLabel){
+    document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('sel'));
+    const match=[...document.querySelectorAll('.cat-pill')].find(p=>p.textContent.includes(latest.catLabel));
+    if(match){match.classList.add('sel');currentCat=match.dataset.cat;}
+  }
+
+  // Fill personality chips — match saved chips text against current chip elements
+  if(latest.chips&&latest.chips.length){
+    document.querySelectorAll('#rChips .chip').forEach(chip=>{
+      chip.classList.toggle('sel', latest.chips.includes(chip.textContent.trim()));
+    });
+  }
+
+  // Fill gender chips
+  if(latest.gender){
+    document.querySelectorAll('#rGenderChips .chip').forEach(chip=>{
+      chip.classList.toggle('sel', chip.dataset.gender===latest.gender);
+    });
+  }
+
+  // Fill MBTI
+  if(latest.mbti){
+    document.getElementById('rMBTI').value=latest.mbti;
+  } else {
+    document.getElementById('rMBTI').value='';
+  }
+
+  // Show a subtle hint that info was auto-filled
+  const nameInput=document.getElementById('rPersonName');
+  nameInput.style.borderColor='var(--accent)';
+  setTimeout(()=>nameInput.style.borderColor='',1200);
+}
+document.addEventListener('click',e=>{if(!e.target.closest('#recentDropdown')&&!e.target.closest('.recent-btn-sm'))document.getElementById('recentDropdown').style.display='none';});
+
+// ── Pages ──
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-pill').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  const navMap={home:'navHome',journal:'navJournal',relationship:'navRelation',archive:'navArchive'};
+  if(navMap[name])document.getElementById(navMap[name]).classList.add('active');
+  if(name==='home')renderHomeRecent();
+  if(name==='archive')renderArchive('journal');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Journal ──
+document.getElementById('jInput').addEventListener('input',function(){
+  const n=this.value.length;
+  document.getElementById('jCharHint').textContent=n>0?(lang==='zh'?`已寫 ${n} 字`:`${n} characters`):t('j_hint');
+});
+
+// Auto-detect people from relation store mentioned in journal text — fully automatic, no UI
+function detectPeopleInJournal(text){
+  const store=getRelations();
+  const names=Object.keys(store);
+  // Returns array of names detected — used in runJournal
+  return names.filter(name=>text.includes(name));
+}
+
+function getSelectedPeople(){
+  // Always auto — return all detected people from current journal text
+  const text=document.getElementById('jInput').value;
+  return detectPeopleInJournal(text);
+}
+
+// Build rich relationship context string for a list of people
+function buildRelationContext(peopleNames,isEn){
+  const store=getRelations();
+  if(!peopleNames.length)return'';
+  const sections=peopleNames.map(name=>{
+    const entries=store[name]||[];
+    if(!entries.length)return null;
+    const latestDesc=entries[0]?.personDesc||entries[0]?.chips?.join('、')||'';
+    const catLabel=entries[0]?.catLabel||'';
+    const history=entries.map((e,i)=>{
+      const d=new Date(e.date);
+      const ds=d.toLocaleDateString(isEn?'en-US':'zh-TW',{year:'numeric',month:'long',day:'numeric'});
+      const score=e.analysis?.trend_score!==undefined?`（${isEn?'health score':'健康度'}: ${e.analysis.trend_score}/100）`:'';
+      const summary=e.analysis?.summary_title||'';
+      const sit=e.situation?.slice(0,120)||'';
+      const advice=e.analysis?.specific_advice?.slice(0,100)||'';
+      return isEn
+        ?`  [Entry ${i+1} — ${ds}${score}]: "${summary}" | Situation: ${sit} | Key advice at that time: ${advice}`
+        :` 【第${i+1}筆 — ${ds}${score}】：「${summary}」| 當時狀況：${sit} | 當時建議：${advice}`;
+    }).join('\n');
+    return isEn
+      ?`--- Person: ${name} (${catLabel}) ---\nPersonality: ${latestDesc||'not described'}\nRelationship history (oldest to newest context, newest = most recent state):\n${history}`
+      :`--- 人物：${name}（${catLabel}）---\n個性：${latestDesc||'未描述'}\n關係歷史（從舊到新，最新的代表目前狀態）：\n${history}`;
+  }).filter(Boolean);
+  return sections.length?sections.join('\n\n'):'';
+}
+
+async function runJournal(){
+  const text=document.getElementById('jInput').value.trim();
+  if(!text||text.length<10){const e=document.getElementById('jErr');e.textContent=t('j_err');e.style.display='block';return}
+  document.getElementById('jErr').style.display='none';
+  document.getElementById('jForm').style.display='none';
+  document.getElementById('jLoading').classList.add('on');
+  const isEn=lang==='en';
+
+  // Build relationship context from selected people
+  const selectedPeople=getSelectedPeople();
+  const relContext=buildRelationContext(selectedPeople,isEn);
+  const hasContext=relContext.length>0;
+
+  const contextBlock=hasContext?(isEn
+    ?`\n\nRELATIONSHIP CONTEXT — The user has an ongoing relationship history with the following people mentioned in this entry. Use this history to give more accurate, personalised advice that considers the full arc of each relationship:\n${relContext}`
+    :`\n\n關係背景資料 — 以下是使用者在這篇日記中提到的人物的完整關係歷史。請將這些歷史納入分析思考，讓建議更準確、更貼近這些關係的真實發展脈絡：\n${relContext}`)
+  :'';
+
+  const prompt=isEn?
+`You are a warm, insightful emotional companion. The user wrote about their day.
+IMPORTANT: Reply entirely in English. Reply ONLY with valid JSON (no markdown, no extra text):
+{
+  "mood_key": one of: happy/touched/calm/excited/sad/hurt/anxious/angry/irritated,
+  "mood_label": "2-4 word mood description in English",
+  "mood_analysis": "Warm, insightful analysis of their emotional state, 2-3 sentences in English",
+  "praise_title": "Short praise title in English (max 8 words)",
+  "praise_body": "Genuine praise, 3-4 sentences in English, make them feel seen",
+  "feedback": "Gentle, constructive feedback, 2-3 sentences in English, encouraging tone${hasContext?'. If relevant people from relationship history are mentioned, weave in specific insights about those relationships':''}",
+  "growth_title": "Growth tip title in English (max 6 words)",
+  "growth_tips": "2-3 specific actionable growth suggestions in English, each in a paragraph separated by newline${hasContext?'. Consider the relationship patterns and history provided to give more targeted advice':''}"
+}
+User's day: ${text}${contextBlock}`
+:`你是一位溫暖有洞察力的心靈陪伴者。
+重要：請務必全程使用繁體中文回答，所有 JSON 的值都必須是繁體中文。
+只回覆有效 JSON（不要 markdown，不要其他文字）：
+{
+  "mood_key": 從以下選一個: happy/touched/calm/excited/sad/hurt/anxious/angry/irritated,
+  "mood_label": "2-4個字描述今日心情（繁體中文）",
+  "mood_analysis": "深度分析情緒狀態，2-3句，溫暖有洞察力（繁體中文）",
+  "praise_title": "讚揚標題（10字以內，繁體中文）",
+  "praise_body": "真誠讚揚，3-4句，讓他感到被看見（繁體中文）${hasContext?'。如有提到關係歷史中的人物，請針對那些關係給出具體洞察':''}",
+  "feedback": "溫和建設性回饋，2-3句，鼓勵語氣（繁體中文）",
+  "growth_title": "成長建議標題（8字以內，繁體中文）",
+  "growth_tips": "2-3個具體可行的成長建議，每個一段，用換行分隔（繁體中文）${hasContext?'。請結合關係歷史的脈絡，給出更有針對性的建議':''}"
+}
+使用者今天的記錄：${text}${contextBlock}`;
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-5",max_tokens:1200,messages:[{role:"user",content:prompt}]})});
+    const data=await res.json();
+    const d=JSON.parse(data.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim());
+    document.getElementById('jLoading').classList.remove('on');
+    renderJournalResults(d,text);
+    saveJournal({id:Date.now(),date:new Date().toISOString(),text,analysis:d,lang,linkedPeople:selectedPeople});
+    const b=document.getElementById('jSaveBanner');b.textContent=t('j_saved');b.style.display='block';setTimeout(()=>b.style.display='none',3000);
+  }catch(e){
+    document.getElementById('jLoading').classList.remove('on');
+    document.getElementById('jForm').style.display='block';
+    const er=document.getElementById('jErr');
+    er.textContent=!API_KEY?(lang==='en'?'AI analysis requires an API key — add yours to const API_KEY in the file.':'請在檔案中的 const API_KEY 填入你的 Anthropic API 金鑰以啟用 AI 分析。'):(lang==='en'?'Something went wrong. Try again.':'發生問題，請再試一次');
+    er.style.display='block';
+    console.error(e);
+  }
+}
+
+function renderJournalResults(d,text){
+  const mk=d.mood_key||'calm';
+  const color=MOOD_COLORS[mk]||'#B0ADB5';
+  const banner=document.getElementById('jMoodBanner');
+  banner.style.background=`linear-gradient(135deg,${color}30,${color}18)`;
+  banner.style.borderColor=`${color}80`;
+  document.getElementById('jMoodEmoji').textContent=MOOD_EMOJIS[mk]||'🌸';
+  document.getElementById('jMoodLabel').textContent=d.mood_label||'';
+  document.getElementById('jMoodBody').textContent=d.mood_analysis||'';
+  document.getElementById('jCards').innerHTML=[
+    {type:'praise',label:t('j_praise'),title:d.praise_title,body:d.praise_body},
+    {type:'feedback',label:t('j_feedback'),body:d.feedback},
+    {type:'growth',label:t('j_growth'),title:d.growth_title,body:d.growth_tips},
+  ].map(c=>`<div class="rcard ${c.type}"><div class="rlabel">${c.label}</div>${c.title?`<div class="rcard-title">${c.title}</div>`:''}<div class="rbody">${c.body||''}</div></div>`).join('');
+  document.getElementById('jResults').classList.add('on');
+}
+
+function resetJournal(){
+  document.getElementById('jResults').classList.remove('on');
+  document.getElementById('jForm').style.display='block';
+  document.getElementById('jInput').value='';
+  document.getElementById('jCharHint').textContent=t('j_hint');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Relationship ──
+async function runRelation(){
+  const name=document.getElementById('rPersonName').value.trim();
+  const sit=document.getElementById('rSituation').value.trim();
+  const desc=document.getElementById('rPersonDesc').value.trim();
+  const goal=document.getElementById('rGoal').value.trim();
+  const errEl=document.getElementById('rErr');
+  if(!name){errEl.textContent=t('r_err_name');errEl.style.display='block';return}
+  if(!sit||sit.length<10){errEl.textContent=t('r_err_sit');errEl.style.display='block';return}
+  errEl.style.display='none';
+  const catLabel=currentCat?T[lang].cats.find(c=>c.id===currentCat)?.name:'';
+  const chips=[...document.querySelectorAll('#rChips .chip.sel')].map(c=>c.textContent);
+  const gender=document.querySelector('#rGenderChips .chip.sel')?.dataset.gender||'';
+  const mbti=document.getElementById('rMBTI').value||'';
+  document.getElementById('rForm').style.display='none';
+  document.getElementById('rLoading').classList.add('on');
+  const isEn=lang==='en';
+
+  // Build stacked history for this person from all past entries
+  const store=getRelations();
+  const pastEntries=(store[name]||[]).slice().reverse(); // oldest first for chronological context
+  const hasHistory=pastEntries.length>0;
+  const historyBlock=hasHistory?pastEntries.map((e,i)=>{
+    const d=new Date(e.date);
+    const ds=d.toLocaleDateString(isEn?'en-US':'zh-TW',{year:'numeric',month:'long',day:'numeric'});
+    const score=e.analysis?.trend_score!==undefined?`(${isEn?'health':'健康度'}: ${e.analysis.trend_score}/100)`:'';
+    const summary=e.analysis?.summary_title||'';
+    const sit=(e.situation||'').slice(0,150);
+    const emotionRead=(e.analysis?.emotion_read||'').slice(0,100);
+    const advice=(e.analysis?.specific_advice||'').slice(0,100);
+    return isEn
+      ?`[${i+1}] ${ds} ${score}\n  Summary: ${summary}\n  What happened: ${sit}\n  Emotional state then: ${emotionRead}\n  Advice given then: ${advice}`
+      :`【${i+1}】${ds} ${score}\n  摘要：${summary}\n  當時狀況：${sit}\n  當時情緒：${emotionRead}\n  當時建議：${advice}`;
+  }).join('\n\n'):'';
+
+  const historySection=hasHistory?(isEn
+    ?`\n\nCOMPLETE RELATIONSHIP HISTORY (chronological, oldest→newest — use this to track how the relationship has evolved and compute an accurate cumulative trend score):\n${historyBlock}\n\nNow analyze this NEW situation in the context of the above history. The trend_score must reflect the CUMULATIVE arc, not just this single incident.`
+    :`\n\n完整關係歷史（按時間順序，從舊到新——請用這些資料追蹤關係演變，並計算出準確的累積趨勢分數）：\n${historyBlock}\n\n現在請在上述歷史脈絡下分析這次的新狀況。trend_score 必須反映累積的關係走向，而非只看這一次事件。`)
+  :'';
+
+  const prompt=isEn?
+`You are an expert relationship psychologist. Analyze this interpersonal situation deeply.
+IMPORTANT: Reply entirely in English. Reply ONLY with valid JSON (no markdown, no extra text):
+{
+  "summary_title": "Core situation in English, 10 words max",
+  "emotion_read": "Deep emotional analysis of the user in English, 2-3 sentences, warm and insightful",
+  "other_perspective": "From the other person's viewpoint in English — feelings, thoughts, motivations, 2-3 sentences",
+  "specific_advice": "Most important actionable advice in English with example phrases to say, 3-4 sentences${hasHistory?'. Reference the relationship history where relevant':''}",
+  "red_flags": "1-2 concrete warnings in English: behaviors or patterns to avoid${hasHistory?'. Consider patterns across the history':''}",
+  "trend_analysis": "Where this relationship is likely heading in English, possible outcomes, 2-3 sentences${hasHistory?'. Must reflect the full cumulative history, not just this incident':''}",
+  "trend_score": number 0-100 for relationship health${hasHistory?', weighted across all historical entries — show progression':' based on current situation'}
+}
+Category: ${catLabel||'Interpersonal'} | Person: ${name}${gender?` | Gender: ${gender}`:''}${mbti?` | MBTI: ${mbti}`:''}
+Current situation: ${sit} | Their personality: ${desc||'Not described'}
+${chips.length?'Personality traits: '+chips.join(', '):''}Goal: ${goal||'Not specified'}${historySection}`
+:`你是一位專業的人際關係心理師。
+重要：請務必全程使用繁體中文回答，所有 JSON 的值都必須是繁體中文。
+只回覆有效 JSON（不要 markdown，不要其他文字）：
+{
+  "summary_title": "10字以內總結核心情境（繁體中文）",
+  "emotion_read": "深度分析使用者情緒狀態，2-3句，溫暖有洞察力（繁體中文）",
+  "other_perspective": "從對方角度分析感受、想法、動機，2-3句（繁體中文）",
+  "specific_advice": "最重要的具體溝通建議，含可以說的句子範例，3-4句（繁體中文）${hasHistory?'，請參考關係歷史給出有脈絡的建議':''}",
+  "red_flags": "1-2個具體警示：需要避開的行為或模式（繁體中文）${hasHistory?'，請考量歷史中出現的模式':''}",
+  "trend_analysis": "這段關係可能走向，有哪些發展，2-3句（繁體中文）${hasHistory?'，必須反映完整歷史脈絡，而非只看這一次':''}",
+  "trend_score": 0到100數字代表關係健康度${hasHistory?'，需根據所有歷史紀錄加權計算，體現出趨勢變化':'，根據此次情況評估'}
+}
+類別：${catLabel||'人際關係'} | 對方：${name}${gender?` | 性別：${gender}`:''}${mbti?` | MBTI：${mbti}`:''}
+此次狀況：${sit} | 對方個性：${desc||'未描述'}
+${chips.length?'個性標籤：'+chips.join('、'):''}目標：${goal||'未描述'}${historySection}`;
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-5",max_tokens:1200,messages:[{role:"user",content:prompt}]})});
+    const data=await res.json();
+    const d=JSON.parse(data.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim());
+    document.getElementById('rLoading').classList.remove('on');
+    renderRelationResults(d);
+    saveRelation(name,{id:Date.now(),date:new Date().toISOString(),situation:sit,personDesc:desc,goal,catLabel,chips,gender,mbti,analysis:d,lang});
+    const b=document.getElementById('rSaveBanner');b.textContent=t('r_saved');b.style.display='block';setTimeout(()=>b.style.display='none',3000);
+  }catch(e){
+    document.getElementById('rLoading').classList.remove('on');
+    document.getElementById('rForm').style.display='block';
+    const er=document.getElementById('rErr');
+    er.textContent=!API_KEY?(lang==='en'?'AI analysis requires an API key — add yours to const API_KEY in the file.':'請在檔案中的 const API_KEY 填入你的 Anthropic API 金鑰以啟用 AI 分析。'):(lang==='en'?'Something went wrong. Try again.':'發生問題，請再試一次');
+    er.style.display='block';
+    console.error(e);
+  }
+}
+
+function renderRelationResults(d){
+  document.getElementById('rSummaryTitle').textContent=d.summary_title||'';
+  document.getElementById('rCards').innerHTML=[
+    {type:'emotion',label:t('r_emotion'),body:d.emotion_read},
+    {type:'other',label:t('r_other'),body:d.other_perspective},
+    {type:'advice',label:t('r_advice'),body:d.specific_advice},
+    {type:'warning',label:t('r_warning'),body:d.red_flags},
+    {type:'trend',label:t('r_trend'),body:d.trend_analysis,score:d.trend_score},
+  ].map(c=>`<div class="rcard ${c.type}"><div class="rlabel">${c.label}</div><div class="rbody">${c.body||''}</div>${c.score!==undefined?`<div class="trend-meter"><div class="trend-bar" id="tBar" style="width:0%"></div></div><div class="trend-score-txt">${t('trend_health')} ${c.score}/100</div>`:''}</div>`).join('');
+  setTimeout(()=>{const b=document.getElementById('tBar');if(b)b.style.width=(d.trend_score||50)+'%'},120);
+  document.getElementById('rResults').classList.add('on');
+}
+
+function resetRelation(){
+  document.getElementById('rResults').classList.remove('on');
+  document.getElementById('rForm').style.display='block';
+  document.getElementById('rPersonName').value='';
+  document.getElementById('rSituation').value='';
+  document.getElementById('rPersonDesc').value='';
+  document.getElementById('rGoal').value='';
+  document.getElementById('rErr').style.display='none';
+  document.querySelectorAll('#rChips .chip').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('#rGenderChips .chip').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('rMBTI').value='';
+  document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('sel'));
+  currentCat=null;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Archive ──
+let archiveTab='journal';
+function switchArchiveTab(tab){
+  archiveTab=tab;
+  document.getElementById('archTabJournal').classList.toggle('active',tab==='journal');
+  document.getElementById('archTabPeople').classList.toggle('active',tab==='people');
+  renderArchive(tab);
+}
+function renderArchive(tab){
+  const el=document.getElementById('archContent');
+  if(tab==='journal'){
+    const entries=getJournals();
+    if(!entries.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon"><svg width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="21" height="28" rx="5" fill="#a8907c"/><rect x="7" y="7" width="9" height="3.5" rx="1.75" fill="#fdf8f3"/><circle cx="26.5" cy="10" r="2" fill="#c8b09a"/><circle cx="26.5" cy="16" r="2" fill="#c8b09a"/><circle cx="26.5" cy="22" r="2" fill="#c8b09a"/></svg><div class="empty-txt">${t('no_j')}</div></div>`;return}
+    el.innerHTML='<div class="arch-list">'+entries.map((e,i)=>{
+      const d=new Date(e.date);
+      const ds=lang==='en'?d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):d.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
+      const mk=e.analysis?.mood_key||'calm';
+      const color=MOOD_COLORS[mk]||'#B0ADB5';
+      const moodName=lang==='en'?MOOD_NAMES_EN[mk]:MOOD_NAMES_ZH[mk];
+      const emoji=MOOD_EMOJIS[mk]||'✦';
+      return `<div class="j-item" data-journal-id="${e.id}" style="animation-delay:${i*0.05}s">
+        <div class="j-item-top">
+          <div class="j-mood-pill" style="background:${color}30;border:1px solid ${color}70;color:${adjustColor(color)}">
+            <span>${emoji}</span><span>${moodName||''}</span>
+          </div>
+          <span class="j-date">${ds}</span>
+        </div>
+        <div class="j-summary">${e.analysis?.praise_title||''}</div>
+        <div class="j-preview">${e.text?.slice(0,80)||''}</div>
+        <div style="display:flex;justify-content:flex-end;margin-top:10px">
+          <button class="item-delete" data-del-journal="${e.id}">${lang==='en'?'delete':'刪除'}</button>
+        </div>
+      </div>`;
+    }).join('')+'</div>';
+    // Attach events after render
+    el.querySelectorAll('.j-item').forEach(item=>{
+      item.addEventListener('click',function(ev){
+        if(ev.target.closest('.item-delete'))return;
+        openJournalEntry(this.dataset.journalId);
+      });
+    });
+    el.querySelectorAll('[data-del-journal]').forEach(btn=>{
+      btn.addEventListener('click',function(ev){
+        ev.stopPropagation();
+        delJournal(this.dataset.delJournal);
+      });
+    });
+  } else {
+    const store=getRelations();
+    const names=Object.keys(store);
+    if(!names.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon"><svg width="52" height="38" viewBox="0 0 44 34" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="40" height="22" rx="11" fill="#C4A09A"/><path d="M10 23L6 32L20 24Z" fill="#C4A09A"/><circle cx="15" cy="13" r="2.5" fill="#fdf8f3"/><circle cx="22" cy="13" r="2.5" fill="#fdf8f3"/><circle cx="29" cy="13" r="2.5" fill="#fdf8f3"/></svg><div class="empty-txt">${t('no_p')}</div></div>`;return}
+    const catIcons={love:`<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M10 17C10 17 1.5 12 1.5 6C1.5 3.2 3.5 1.5 5.8 1.5C7.2 1.5 8.5 2.3 10 3.8C11.5 2.3 12.8 1.5 14.2 1.5C16.5 1.5 18.5 3.2 18.5 6C18.5 12 10 17 10 17Z" fill="#B8788A"/></svg>`,friendship:`<svg width="24" height="20" viewBox="0 0 30 22" fill="none" style="vertical-align:middle"><circle cx="9" cy="5" r="4" fill="#a8907c"/><path d="M3 21C3 15 6 12 9 12C12 12 15 15 15 21Z" fill="#a8907c"/><circle cx="21" cy="5" r="4" fill="#c0a890"/><path d="M15 21C15 15 18 12 21 12C24 12 27 15 27 21Z" fill="#c0a890"/></svg>`,Romantic:`<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M10 17C10 17 1.5 12 1.5 6C1.5 3.2 3.5 1.5 5.8 1.5C7.2 1.5 8.5 2.3 10 3.8C11.5 2.3 12.8 1.5 14.2 1.5C16.5 1.5 18.5 3.2 18.5 6C18.5 12 10 17 10 17Z" fill="#B8788A"/></svg>`,Friendship:`<svg width="24" height="20" viewBox="0 0 30 22" fill="none" style="vertical-align:middle"><circle cx="9" cy="5" r="4" fill="#a8907c"/><path d="M3 21C3 15 6 12 9 12C12 12 15 15 15 21Z" fill="#a8907c"/><circle cx="21" cy="5" r="4" fill="#c0a890"/><path d="M15 21C15 15 18 12 21 12C24 12 27 15 27 21Z" fill="#c0a890"/></svg>`,work:`<svg width="20" height="18" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><rect x="1" y="7" width="20" height="12" rx="3" fill="#a8907c"/><path d="M8 7V5C8 4 8.8 3 11 3C13.2 3 14 4 14 5V7" stroke="#c8b09a" stroke-width="1.8" stroke-linecap="round" fill="none"/><line x1="1" y1="12" x2="21" y2="12" stroke="#8a7060" stroke-width="1"/></svg>`,Work:`<svg width="20" height="18" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><rect x="1" y="7" width="20" height="12" rx="3" fill="#a8907c"/><path d="M8 7V5C8 4 8.8 3 11 3C13.2 3 14 4 14 5V7" stroke="#c8b09a" stroke-width="1.8" stroke-linecap="round" fill="none"/><line x1="1" y1="12" x2="21" y2="12" stroke="#8a7060" stroke-width="1"/></svg>`,family:`<svg width="20" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M11 1L21.5 9H0.5L11 1Z" fill="#A8B5A2"/><rect x="2" y="9" width="18" height="10" rx="2" fill="#e8d5c0"/><rect x="8.5" y="13" width="5" height="6" rx="1" fill="#a8907c"/></svg>`,Family:`<svg width="20" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M11 1L21.5 9H0.5L11 1Z" fill="#A8B5A2"/><rect x="2" y="9" width="18" height="10" rx="2" fill="#e8d5c0"/><rect x="8.5" y="13" width="5" height="6" rx="1" fill="#a8907c"/></svg>`};
+    el.innerHTML='<div class="arch-list">'+names.map((name,i)=>{
+      const entries=store[name];
+      const latest=entries[0];
+      const d=new Date(latest.date);
+      const ds=lang==='en'?d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):d.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
+      const icon=catIcons[latest.catLabel]||`<svg width="22" height="16" viewBox="0 0 44 34" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><rect x="2" y="2" width="40" height="22" rx="11" fill="#C4A09A"/><path d="M10 23L6 32L20 24Z" fill="#C4A09A"/><circle cx="15" cy="13" r="2.5" fill="#fdf8f3"/><circle cx="22" cy="13" r="2.5" fill="#fdf8f3"/><circle cx="29" cy="13" r="2.5" fill="#fdf8f3"/></svg>`;
+      const safeName=encodeURIComponent(name);
+      return `<div class="p-item" data-person-name="${safeName}" style="animation-delay:${i*0.05}s">
+        <div class="p-item-top">
+          <div class="p-avatar">${icon}</div>
+          <div>
+            <div class="p-name">${name}</div>
+            <div style="display:flex;gap:6px;margin-top:4px"><span class="p-cat">${latest.catLabel||''}</span></div>
+          </div>
+        </div>
+        <div class="p-last">${ds}</div>
+        <div class="p-preview">${latest.analysis?.summary_title||latest.situation?.slice(0,70)||''}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">
+          <div class="p-count">${entries.length} ${t('entries')}</div>
+          <button class="item-delete" data-del-person="${safeName}">${lang==='en'?'delete':'刪除'}</button>
+        </div>
+      </div>`;
+    }).join('')+'</div>';
+    // Attach events after render
+    el.querySelectorAll('.p-item').forEach(item=>{
+      item.addEventListener('click',function(ev){
+        if(ev.target.closest('.item-delete'))return;
+        openPerson(decodeURIComponent(this.dataset.personName),null);
+      });
+    });
+    el.querySelectorAll('[data-del-person]').forEach(btn=>{
+      btn.addEventListener('click',function(ev){
+        ev.stopPropagation();
+        delPerson(decodeURIComponent(this.dataset.delPerson));
+      });
+    });
+  }
+}
+
+function adjustColor(hex){
+  // darken hex slightly for text
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `rgb(${Math.max(0,r-60)},${Math.max(0,g-60)},${Math.max(0,b-60)})`;
+}
+
+function openJournalEntry(id){
+  const entry=getJournals().find(e=>String(e.id)===String(id));
+  if(!entry)return;
+  const d=new Date(entry.date);
+  const ds=(entry.lang||lang)==='en'?d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):d.toLocaleDateString('zh-TW',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('modalDate').textContent=ds;
+  document.getElementById('modalOrig').textContent=entry.text||'';
+  const a=entry.analysis;const el=entry.lang||lang;
+  const labels=el==='en'?['You deserve to be seen','A little feedback','Growing into yourself']:['你值得被看見','給你的一點回饋','成為更好的自己'];
+  const mk=a?.mood_key||'calm';const color=MOOD_COLORS[mk]||'#B0ADB5';
+  const mname=el==='en'?MOOD_NAMES_EN[mk]:MOOD_NAMES_ZH[mk];
+  document.getElementById('modalCards').innerHTML=`
+    <div style="background:${color}25;border:1.5px solid ${color}60;border-radius:12px;padding:18px 20px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span style="font-size:28px">${MOOD_EMOJIS[mk]||'🌸'}</span><span style="font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;color:var(--accent)">${mname}</span></div>
+      <div style="font-size:13px;font-weight:300;color:var(--dim);line-height:1.85">${a?.mood_analysis||''}</div>
+    </div>`+
+    [['praise',labels[0],a?.praise_title,a?.praise_body],['feedback',labels[1],'',a?.feedback],['growth',labels[2],a?.growth_title,a?.growth_tips]].map(([type,label,title,body])=>`
+    <div class="rcard ${type}" style="margin-bottom:10px"><div class="rlabel">${label}</div>${title?`<div class="rcard-title">${title}</div>`:''}<div class="rbody">${body||''}</div></div>`).join('');
+  document.getElementById('modalOverlay').classList.add('on');
+}
+
+function openPerson(name,event){
+  if(event&&(event.target.classList.contains('item-delete')||event.target.closest('.item-delete')))return;
+  const store=getRelations();const entries=store[name]||[];
+  document.getElementById('detailName').textContent=name;
+  const catIcons={love:`<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M10 17C10 17 1.5 12 1.5 6C1.5 3.2 3.5 1.5 5.8 1.5C7.2 1.5 8.5 2.3 10 3.8C11.5 2.3 12.8 1.5 14.2 1.5C16.5 1.5 18.5 3.2 18.5 6C18.5 12 10 17 10 17Z" fill="#B8788A"/></svg>`,friendship:`<svg width="24" height="20" viewBox="0 0 30 22" fill="none" style="vertical-align:middle"><circle cx="9" cy="5" r="4" fill="#a8907c"/><path d="M3 21C3 15 6 12 9 12C12 12 15 15 15 21Z" fill="#a8907c"/><circle cx="21" cy="5" r="4" fill="#c0a890"/><path d="M15 21C15 15 18 12 21 12C24 12 27 15 27 21Z" fill="#c0a890"/></svg>`,Romantic:`<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M10 17C10 17 1.5 12 1.5 6C1.5 3.2 3.5 1.5 5.8 1.5C7.2 1.5 8.5 2.3 10 3.8C11.5 2.3 12.8 1.5 14.2 1.5C16.5 1.5 18.5 3.2 18.5 6C18.5 12 10 17 10 17Z" fill="#B8788A"/></svg>`,Friendship:`<svg width="24" height="20" viewBox="0 0 30 22" fill="none" style="vertical-align:middle"><circle cx="9" cy="5" r="4" fill="#a8907c"/><path d="M3 21C3 15 6 12 9 12C12 12 15 15 15 21Z" fill="#a8907c"/><circle cx="21" cy="5" r="4" fill="#c0a890"/><path d="M15 21C15 15 18 12 21 12C24 12 27 15 27 21Z" fill="#c0a890"/></svg>`,work:`<svg width="20" height="18" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><rect x="1" y="7" width="20" height="12" rx="3" fill="#a8907c"/><path d="M8 7V5C8 4 8.8 3 11 3C13.2 3 14 4 14 5V7" stroke="#c8b09a" stroke-width="1.8" stroke-linecap="round" fill="none"/><line x1="1" y1="12" x2="21" y2="12" stroke="#8a7060" stroke-width="1"/></svg>`,Work:`<svg width="20" height="18" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><rect x="1" y="7" width="20" height="12" rx="3" fill="#a8907c"/><path d="M8 7V5C8 4 8.8 3 11 3C13.2 3 14 4 14 5V7" stroke="#c8b09a" stroke-width="1.8" stroke-linecap="round" fill="none"/><line x1="1" y1="12" x2="21" y2="12" stroke="#8a7060" stroke-width="1"/></svg>`,family:`<svg width="20" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M11 1L21.5 9H0.5L11 1Z" fill="#A8B5A2"/><rect x="2" y="9" width="18" height="10" rx="2" fill="#e8d5c0"/><rect x="8.5" y="13" width="5" height="6" rx="1" fill="#a8907c"/></svg>`,Family:`<svg width="20" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M11 1L21.5 9H0.5L11 1Z" fill="#A8B5A2"/><rect x="2" y="9" width="18" height="10" rx="2" fill="#e8d5c0"/><rect x="8.5" y="13" width="5" height="6" rx="1" fill="#a8907c"/></svg>`};
+  document.getElementById('detailAvatar').innerHTML=catIcons[entries[0]?.catLabel]||`<svg width="22" height="16" viewBox="0 0 44 34" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><rect x="2" y="2" width="40" height="22" rx="11" fill="#C4A09A"/><path d="M10 23L6 32L20 24Z" fill="#C4A09A"/><circle cx="15" cy="13" r="2.5" fill="#fdf8f3"/><circle cx="22" cy="13" r="2.5" fill="#fdf8f3"/><circle cx="29" cy="13" r="2.5" fill="#fdf8f3"/></svg>`;
+  document.getElementById('detailMeta').textContent=`${entries.length} ${t('entries')}`;
+  document.getElementById('timelineEl').innerHTML=entries.map((e,i)=>{
+    const d=new Date(e.date);
+    const el=e.lang||lang;
+    const ds=el==='en'?d.toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric',year:'numeric'}):d.toLocaleDateString('zh-TW',{weekday:'short',year:'numeric',month:'long',day:'numeric'});
+    return `<div class="tl-item" style="animation-delay:${i*0.06}s">
+      <div class="tl-dot">✦</div>
+      <div class="tl-body">
+        <div class="tl-date">${ds}</div>
+        <div class="tl-card" data-entry-name="${encodeURIComponent(name)}" data-entry-id="${e.id}">
+          <button class="tl-del" data-del-name="${encodeURIComponent(name)}" data-del-id="${e.id}">${el==='en'?'delete':'刪除'}</button>
+          <div class="tl-mood">${e.analysis?.summary_title||''}</div>
+          <div class="tl-preview">${e.situation?.slice(0,90)||''}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Attach events after render
+  document.querySelectorAll('.tl-card').forEach(card=>{
+    card.addEventListener('click',function(ev){
+      if(ev.target.closest('.tl-del'))return;
+      openRelEntry(decodeURIComponent(this.dataset.entryName),this.dataset.entryId);
+    });
+  });
+  document.querySelectorAll('.tl-del').forEach(btn=>{
+    btn.addEventListener('click',function(ev){
+      ev.stopPropagation();
+      delRelEntry(decodeURIComponent(this.dataset.delName),this.dataset.delId);
+    });
+  });
+
+  showPage('detail');
+}
+
+function openRelEntry(name,id){
+  const store=getRelations();const entry=(store[name]||[]).find(e=>String(e.id)===String(id));
+  if(!entry)return;
+  const el=entry.lang||lang;
+  const d=new Date(entry.date);
+  const ds=el==='en'?d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):d.toLocaleDateString('zh-TW',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('modalDate').textContent=ds;
+  document.getElementById('modalOrig').textContent=entry.situation||'';
+  const a=entry.analysis;
+  const labels=el==='en'?['Emotional Reading',"Their Perspective",'Actionable Advice','Red Flags','Relationship Trajectory']:['情緒解讀','對方的視角','具體建議','警示紅線','關係趨勢'];
+  const types=['emotion','other','advice','warning','trend'];
+  const bodies=[a?.emotion_read,a?.other_perspective,a?.specific_advice,a?.red_flags,a?.trend_analysis];
+  document.getElementById('modalCards').innerHTML=types.map((type,i)=>`
+    <div class="rcard ${type}" style="margin-bottom:10px">
+      <div class="rlabel">${labels[i]}</div>
+      <div class="rbody">${bodies[i]||''}</div>
+      ${type==='trend'&&a?.trend_score!==undefined?`<div class="trend-meter"><div class="trend-bar" style="width:${a.trend_score}%"></div></div><div class="trend-score-txt">${el==='en'?'Relationship Health':'關係健康度'} ${a.trend_score}/100</div>`:''}
+    </div>`).join('');
+  document.getElementById('modalOverlay').classList.add('on');
+}
+
+function closeModal(e){if(!e||e.target===document.getElementById('modalOverlay'))document.getElementById('modalOverlay').classList.remove('on');}
+
+// ── Delete ──
+function delJournal(id){
+  deleteJournal(id);
+  renderArchive('journal');
+}
+function delPerson(name){
+  deleteRelPerson(name);
+  renderArchive('people');
+}
+function delRelEntry(name,id){
+  deleteRelEntry(name,id);
+  // Refresh detail view; if no entries left go back to archive
+  const remaining=(getRelations()[name]||[]).length;
+  if(remaining===0){showPage('archive');switchArchiveTab('people');}
+  else{openPerson(name,null);}
+}
+
+// ── Home Recent ──
+function renderHomeRecent(){
+  const jEntries=getJournals().slice(0,2);
+  const rStore=getRelations();
+  const rEntries=Object.entries(rStore).slice(0,2).map(([name,entries])=>({name,latest:entries[0]}));
+  const combined=[
+    ...jEntries.map(e=>({type:'journal',date:new Date(e.date),data:e})),
+    ...rEntries.map(e=>({type:'relation',date:new Date(e.latest.date),data:e}))
+  ].sort((a,b)=>b.date-a.date).slice(0,4);
+
+  const el=document.getElementById('homeRecentList');
+  if(!combined.length){el.innerHTML=`<div style="font-size:12px;color:var(--muted);text-align:center;padding:20px;font-family:'Quicksand',sans-serif">✦</div>`;return}
+  el.innerHTML='<div class="recent-list">'+combined.map(item=>{
+    if(item.type==='journal'){
+      const e=item.data;const mk=e.analysis?.mood_key||'calm';const color=MOOD_COLORS[mk];
+      const ds=lang==='en'?item.date.toLocaleDateString('en-US',{month:'short',day:'numeric'}):item.date.toLocaleDateString('zh-TW',{month:'long',day:'numeric'});
+      return `<div class="recent-item" onclick="showPage('archive');switchArchiveTab('journal')">
+        <div class="ri-mood-dot" style="background:${color}"></div>
+        <div class="ri-info"><div class="ri-title">${e.analysis?.praise_title||lang==='en'?'Journal entry':'日記'}</div><div class="ri-meta">${MOOD_EMOJIS[mk]} ${lang==='en'?MOOD_NAMES_EN[mk]:MOOD_NAMES_ZH[mk]}</div></div>
+        <div class="ri-date">${ds}</div>
+      </div>`;
+    } else {
+      const {name,latest}=item.data;
+      const ds=lang==='en'?item.date.toLocaleDateString('en-US',{month:'short',day:'numeric'}):item.date.toLocaleDateString('zh-TW',{month:'long',day:'numeric'});
+      const catIcons={love:`<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M10 17C10 17 1.5 12 1.5 6C1.5 3.2 3.5 1.5 5.8 1.5C7.2 1.5 8.5 2.3 10 3.8C11.5 2.3 12.8 1.5 14.2 1.5C16.5 1.5 18.5 3.2 18.5 6C18.5 12 10 17 10 17Z" fill="#B8788A"/></svg>`,friendship:`<svg width="24" height="20" viewBox="0 0 30 22" fill="none" style="vertical-align:middle"><circle cx="9" cy="5" r="4" fill="#a8907c"/><path d="M3 21C3 15 6 12 9 12C12 12 15 15 15 21Z" fill="#a8907c"/><circle cx="21" cy="5" r="4" fill="#c0a890"/><path d="M15 21C15 15 18 12 21 12C24 12 27 15 27 21Z" fill="#c0a890"/></svg>`,Romantic:`<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M10 17C10 17 1.5 12 1.5 6C1.5 3.2 3.5 1.5 5.8 1.5C7.2 1.5 8.5 2.3 10 3.8C11.5 2.3 12.8 1.5 14.2 1.5C16.5 1.5 18.5 3.2 18.5 6C18.5 12 10 17 10 17Z" fill="#B8788A"/></svg>`,Friendship:`<svg width="24" height="20" viewBox="0 0 30 22" fill="none" style="vertical-align:middle"><circle cx="9" cy="5" r="4" fill="#a8907c"/><path d="M3 21C3 15 6 12 9 12C12 12 15 15 15 21Z" fill="#a8907c"/><circle cx="21" cy="5" r="4" fill="#c0a890"/><path d="M15 21C15 15 18 12 21 12C24 12 27 15 27 21Z" fill="#c0a890"/></svg>`,work:`<svg width="20" height="18" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><rect x="1" y="7" width="20" height="12" rx="3" fill="#a8907c"/><path d="M8 7V5C8 4 8.8 3 11 3C13.2 3 14 4 14 5V7" stroke="#c8b09a" stroke-width="1.8" stroke-linecap="round" fill="none"/><line x1="1" y1="12" x2="21" y2="12" stroke="#8a7060" stroke-width="1"/></svg>`,Work:`<svg width="20" height="18" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><rect x="1" y="7" width="20" height="12" rx="3" fill="#a8907c"/><path d="M8 7V5C8 4 8.8 3 11 3C13.2 3 14 4 14 5V7" stroke="#c8b09a" stroke-width="1.8" stroke-linecap="round" fill="none"/><line x1="1" y1="12" x2="21" y2="12" stroke="#8a7060" stroke-width="1"/></svg>`,family:`<svg width="20" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M11 1L21.5 9H0.5L11 1Z" fill="#A8B5A2"/><rect x="2" y="9" width="18" height="10" rx="2" fill="#e8d5c0"/><rect x="8.5" y="13" width="5" height="6" rx="1" fill="#a8907c"/></svg>`,Family:`<svg width="20" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M11 1L21.5 9H0.5L11 1Z" fill="#A8B5A2"/><rect x="2" y="9" width="18" height="10" rx="2" fill="#e8d5c0"/><rect x="8.5" y="13" width="5" height="6" rx="1" fill="#a8907c"/></svg>`};
+      const icon=catIcons[latest.catLabel]||`<svg width="22" height="16" viewBox="0 0 44 34" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><rect x="2" y="2" width="40" height="22" rx="11" fill="#C4A09A"/><path d="M10 23L6 32L20 24Z" fill="#C4A09A"/><circle cx="15" cy="13" r="2.5" fill="#fdf8f3"/><circle cx="22" cy="13" r="2.5" fill="#fdf8f3"/><circle cx="29" cy="13" r="2.5" fill="#fdf8f3"/></svg>`;
+      return `<div class="recent-item" onclick="openPerson('${name.replace(/'/g,"\\'")}',null);showPage('detail')">
+        <div class="ri-mood-dot" style="background:var(--accent)"></div>
+        <div class="ri-info"><div class="ri-title">${icon} ${name}</div><div class="ri-meta">${latest.analysis?.summary_title||''}</div></div>
+        <div class="ri-date">${ds}</div>
+      </div>`;
+    }
+  }).join('')+'</div>';
+}
+</script>
+</body>
+</html>
