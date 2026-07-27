@@ -467,6 +467,12 @@ body::before{
       <div class="hc-desc" data-t="hc_journal_desc">Write about your day. AI reads your mood and cheers you on.</div>
       <span class="hc-arrow">→</span>
     </div>
+    <div class="home-card" style="--card-tint:rgba(168,181,162,0.15)" onclick="showPage('archive')">
+      <span class="hc-icon"><svg width="36" height="36" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="28" height="22" rx="4" fill="#A8B5A2"/><rect x="6" y="11" width="12" height="2.5" rx="1.25" fill="#fdf8f3"/><rect x="6" y="16" width="8" height="2.5" rx="1.25" fill="#fdf8f3"/><rect x="6" y="21" width="10" height="2.5" rx="1.25" fill="#fdf8f3"/><rect x="8" y="2" width="16" height="5" rx="2" fill="#8fa896"/></svg></span>
+      <div class="hc-title" data-t="hc_archive">Archive</div>
+      <div class="hc-desc" data-t="hc_archive_desc">Look back at your journey. See how far you've come.</div>
+      <span class="hc-arrow">→</span>
+    </div>
   </div>
 
   <div class="recent-strip">
@@ -581,7 +587,7 @@ body::before{
 <!-- ── Access code overlay ── -->
 <div id="codeOverlay" style="display:none;position:fixed;inset:0;background:rgba(61,46,34,0.5);backdrop-filter:blur(8px);z-index:400;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:22px;padding:38px 32px;width:min(420px,92vw);box-shadow:0 20px 60px rgba(61,46,34,0.2);text-align:center">
-    <div style="font-size:30px;margin-bottom:10px">🌸</div>
+    <div style="margin-bottom:14px"><svg width="52" height="52" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(16,16)"><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(72)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(144)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(216)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(288)"/><circle cx="0" cy="0" r="3.5" fill="#C4788A"/></g></svg></div>
     <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:8px" data-t="code_title">Welcome to Mirumi</div>
     <div style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:20px" data-t="code_sub">Enter your invitation code to start your free 7-day journey.</div>
     <input id="codeInput" type="text" placeholder="MIRUMI-XXXX" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:13px 14px;font-size:14px;text-align:center;letter-spacing:0.08em;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:700;background:var(--bg);color:var(--text);outline:none;margin-bottom:14px;text-transform:uppercase" onkeydown="if(event.key==='Enter')submitCode()"/>
@@ -636,6 +642,7 @@ async function submitCode(){
     if(data.ok){
       localStorage.setItem('mirumi_access_code',code);
       localStorage.setItem('mirumi_activated_at',data.activatedAt);
+      if(data.daysLeft)localStorage.setItem('mirumi_days_left',data.daysLeft);
       document.getElementById('codeOverlay').style.display='none';
       updateTrialPill();
     }else if(data.error==='expired'){
@@ -656,8 +663,17 @@ function updateTrialPill(){
 }
 function openSettings(){
   document.getElementById('trialCodeTxt').textContent=getAccessCode()||'—';
-  const left=Math.max(0,TRIAL_DAYS-trialDay()+(trialExpired()?0:1));
-  document.getElementById('trialDaysTxt').textContent=trialExpired()?t('trial_over'):t('trial_left').replace('{n}',left);
+  const storedDays=parseInt(localStorage.getItem('mirumi_days_left')||'0');
+  let daysTxt;
+  if(storedDays>=999){
+    daysTxt=t('trial_unlimited');
+  }else if(trialExpired()){
+    daysTxt=t('trial_over');
+  }else{
+    const left=Math.max(0,TRIAL_DAYS-trialDay()+(trialExpired()?0:1));
+    daysTxt=t('trial_left').replace('{n}',left);
+  }
+  document.getElementById('trialDaysTxt').textContent=daysTxt;
   document.getElementById('settingsOverlay').style.display='flex';
 }
 function closeSettings(){document.getElementById('settingsOverlay').style.display='none';}
@@ -684,7 +700,7 @@ const T={
     nav_home:'首頁',nav_journal:'今日日記',nav_archive:'回顧',
     home_title_html:'今天的你，<em>好嗎？</em>',
     home_sub:'記錄心情、看見自己，每一天都值得被好好看見',
-    hc_journal:'今日日記',hc_journal_desc:'寫下今天，讓 AI 解讀你的心情、給你鼓勵與回饋',
+    hc_journal:'今日日記',hc_journal_desc:'寫下今天，讓 AI 解讀你的心情、給你鼓勵與回饋',hc_archive:'日記存檔',hc_archive_desc:'回顧你的旅程，看見自己走了多遠。',
     
     recent_title:'最近的紀錄',
     j_badge:'Daily Journal',j_title_html:'今日的你，<em>很不錯</em>',
@@ -716,7 +732,7 @@ const T={
     
     code_title:'歡迎來到 Mirumi',code_sub:'輸入你的邀請碼，開始免費 7 天的心靈旅程',code_btn:'開始我的 7 天 →',
     code_err:'這個邀請碼好像不對，再確認一下，或問問 YuChun 💌',code_err_net:'連線出了點問題，請再試一次',
-    trial_day:'第 {n} 天 · 共 7 天',trial_left:'剩餘 {n} 天',trial_over:'試用已結束',
+    trial_day:'第 {n} 天 · 共 7 天',trial_left:'剩餘 {n} 天',trial_over:'試用已結束',trial_unlimited:'無限期使用',
     exp_title:'你的 7 天旅程完成了',exp_body:'謝謝你這一週與 Mirumi 同行。你的日記仍保存在這個瀏覽器裡。最後一件小事——請分享你的使用回饋，這對我們意義重大。',exp_btn:'分享我的回饋 →',exp_dl_btn:'下載我的日記',exp_new_code:'輸入其他邀請碼',
     limit_msg:'今天的分析次數已用完，明天見 🌙',err_generic:'發生問題，請再試一次',
     set_title:'設定',set_code_label:'你的邀請碼',set_close:'關閉',
@@ -733,7 +749,7 @@ const T={
     arch_dl_title:'Download Report',arch_dl_desc:'Export your journal data as a JSON file',
     code_title:'Welcome to Mirumi',code_sub:'Enter your invitation code to start your free 7-day journey.',code_btn:'Start my 7 days →',
     code_err:"That code doesn't look right — double-check it, or ask YuChun 💌",code_err_net:'Connection problem — please try again.',
-    trial_day:'Day {n} of 7',trial_left:'{n} day(s) left',trial_over:'Trial ended',
+    trial_day:'Day {n} of 7',trial_left:'{n} day(s) left',trial_over:'Trial ended',trial_unlimited:'Unlimited access',
     exp_title:'Your 7 days are complete',exp_body:'Thank you for spending this week with Mirumi. Your journals stay saved in this browser. One last thing — please share your feedback. It means the world.',exp_btn:'Share my feedback →',exp_dl_btn:'Download my journals',exp_new_code:'Enter a different code',
     limit_msg:"You've reached today's limit — see you tomorrow 🌙",err_generic:'Something went wrong. Please try again.',
     set_title:'Settings',set_code_label:'Your invitation code',set_close:'Close',
@@ -746,7 +762,7 @@ const T={
     nav_home:'Home',nav_journal:'Journal',nav_archive:'Archive',
     home_title_html:'How are you <em>today?</em>',
     home_sub:'Track your mood, reflect on your feelings — every day deserves to be seen.',
-    hc_journal:'Daily Journal',hc_journal_desc:'Write about your day. AI reads your mood and cheers you on.',
+    hc_journal:'Daily Journal',hc_journal_desc:'Write about your day. AI reads your mood and cheers you on.',hc_archive:'Archive',hc_archive_desc:'Look back at your journey. See how far you\'ve come.',
     
     recent_title:'Recent entries',
     j_badge:'Daily Journal',j_title_html:'Well Done! You <em>survived today!</em>',
