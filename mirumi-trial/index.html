@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mirumi</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><g transform='translate(16,16)'><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8'/><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8' transform='rotate(72)'/><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8' transform='rotate(144)'/><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8' transform='rotate(216)'/><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8' transform='rotate(288)'/><circle cx='0' cy='0' r='3.5' fill='%23C4788A'/></g></svg>" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Sans:wght@300;400;500&family=Quicksand:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  /* Spring base */
+  --bg:#fdf8f3;
+  --bg2:#faf3eb;
+  --surface:#ffffff;
+  --surface2:#fef9f4;
+  --border:#ecddd0;
+  --border-hi:#d4a882;
+  --text:#3d2e22;
+  --muted:#a8907c;
+  --dim:#7a6055;
+  --accent:#c8845a;
+  --accent-soft:rgba(200,132,90,0.12);
+  --accent-glow:rgba(200,132,90,0.22);
+
+  /* Mood palette - Muted Morandi */
+  --mood-happy:#E8D5A3;
+  --mood-touched:#A8B5A2;
+  --mood-calm:#B0ADB5;
+  --mood-excited:#D4B5B5;
+  --mood-sad:#9BAFC4;
+  --mood-hurt:#8E9BAE;
+  --mood-anxious:#B5A8C8;
+  --mood-angry:#C4A09A;
+  --mood-irritated:#C8B09A;
+
+  --shadow:rgba(100,60,30,0.08);
+  --shadow-md:rgba(100,60,30,0.13);
+}
+
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto Sans TC','Noto Sans',sans-serif;overflow-x:hidden}
+
+/* Spring ambient */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%,rgba(255,220,160,0.18) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 30% at 90% 20%,rgba(255,200,180,0.1) 0%,transparent 50%),
+    radial-gradient(ellipse 30% 25% at 5% 80%,rgba(200,220,180,0.08) 0%,transparent 50%);
+}
+
+/* Floating star decorations */
+.petal{position:fixed;pointer-events:none;z-index:0;opacity:0;animation:drift linear infinite}
+@keyframes drift{0%{opacity:0;transform:translateY(-20px) rotate(0deg)}10%{opacity:0.22}80%{opacity:0.12}100%{opacity:0;transform:translateY(105vh) rotate(360deg) translateX(15px)}}
+
+
+
+/* ── NAV ── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;height:58px;
+  background:rgba(253,248,243,0.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent);letter-spacing:0.01em}
+.nav-logo span{font-size:16px}
+.nav-pills{display:flex;gap:4px}
+.nav-pill{
+  padding:6px 16px;border-radius:20px;border:1.5px solid transparent;
+  background:none;font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:12px;font-weight:600;
+  color:var(--muted);cursor:pointer;transition:all 0.2s;letter-spacing:0.04em;
+}
+.nav-pill:hover{color:var(--dim);border-color:var(--border)}
+.nav-pill.active{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+
+/* ── MOBILE BOTTOM TAB BAR ── */
+.mobile-tabs{display:none}
+@media(max-width:600px){
+  .nav{padding:0 16px;height:52px}
+  .nav-pills{display:none}
+  .mobile-tabs{
+    display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;
+    background:rgba(253,248,243,0.96);backdrop-filter:blur(16px);
+    border-top:1px solid var(--border);height:60px;
+    box-shadow:0 -4px 20px rgba(61,46,34,0.07);
+  }
+  .mobile-tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;background:none;border:none;cursor:pointer;
+    font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:9px;font-weight:700;
+    letter-spacing:0.06em;color:var(--muted);transition:color 0.2s;padding:0;
+  }
+  .mobile-tab svg{transition:opacity 0.2s}
+  .mobile-tab.active{color:var(--accent)}
+  .mobile-tab.active svg path,.mobile-tab.active svg circle,.mobile-tab.active svg rect{stroke:var(--accent)}
+  .container{padding:68px 16px 84px}
+  .home-hero{padding:28px 0 24px}
+  .home-title{font-size:clamp(30px,9vw,42px)}
+  .home-sub{font-size:12px;margin-bottom:24px}
+  .home-cards{gap:12px}
+  .home-card{padding:20px 18px}
+}
+
+/* ── PAGES ── */
+.page{display:none;position:relative;z-index:1}
+.page.active{display:block}
+.container{max-width:740px;margin:0 auto;padding:80px 24px 100px}
+
+/* ── HOME PAGE ── */
+.home-hero{text-align:center;padding:48px 0 40px;animation:fadeUp 0.7s ease both}
+.home-greeting{
+  font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;
+}
+.home-title{
+  font-family:'DM Serif Display',serif;font-size:clamp(38px,6vw,56px);
+  color:var(--text);line-height:1.1;margin-bottom:12px;
+}
+.home-title em{font-style:italic;color:var(--accent)}
+.home-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 36px}
+
+/* Big nav cards */
+.home-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+@media(max-width:520px){.home-cards{grid-template-columns:1fr}}
+.home-card{
+  padding:28px 24px;border-radius:16px;border:1.5px solid var(--border);
+  background:var(--surface);cursor:pointer;transition:all 0.25s;
+  text-align:left;position:relative;overflow:hidden;
+}
+.home-card::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.25s;background:radial-gradient(circle at top left,var(--card-tint,rgba(200,132,90,0.06)),transparent 70%)}
+.home-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 10px 36px var(--shadow-md)}
+.home-card:hover::after{opacity:1}
+.hc-icon{margin-bottom:14px;display:block;line-height:1}
+.hc-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:6px}
+.hc-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.hc-arrow{position:absolute;right:18px;bottom:18px;color:var(--border-hi);font-size:16px;transition:all 0.2s}
+.home-card:hover .hc-arrow{color:var(--accent);transform:translateX(3px)}
+
+/* Recent strip */
+.recent-strip{animation:fadeUp 0.7s 0.15s ease both}
+.strip-title{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.recent-list{display:flex;flex-direction:column;gap:8px}
+.recent-item{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px;border-radius:12px;border:1.5px solid var(--border);
+  background:var(--surface);cursor:pointer;transition:all 0.2s;
+}
+.recent-item:hover{border-color:var(--accent);box-shadow:0 4px 16px var(--shadow)}
+.ri-mood-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ri-info{flex:1}
+.ri-title{font-size:13px;font-weight:500;color:var(--text)}
+.ri-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.ri-date{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:10px;color:var(--muted);letter-spacing:0.05em;white-space:nowrap}
+
+/* ── JOURNAL PAGE ── */
+.page-header{margin-bottom:36px;animation:fadeUp 0.6s ease both}
+.ph-badge{
+  display:inline-block;font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);
+  background:var(--accent-soft);border:1.5px solid var(--accent);
+  padding:4px 14px;border-radius:20px;margin-bottom:16px;
+}
+.ph-title{font-family:'DM Serif Display',serif;font-size:36px;color:var(--text);line-height:1.15;margin-bottom:8px}
+.ph-title em{font-style:italic;color:var(--accent)}
+.ph-sub{font-size:13px;color:var(--muted);line-height:1.6}
+
+.field{margin-bottom:20px}
+.fl{display:block;font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.fl span{color:var(--accent);margin-right:5px}
+.ftx,.finp{
+  width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;
+  padding:13px 17px;font-family:'Noto Sans TC','Noto Sans',sans-serif;
+  font-size:14px;font-weight:300;color:var(--text);outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;letter-spacing:0.02em;resize:none;
+}
+.ftx{min-height:110px;line-height:1.85}
+.ftx::placeholder,.finp::placeholder{color:var(--muted);opacity:0.55;font-style:italic}
+.ftx:focus,.finp:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.fhint{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5}
+
+.go-btn{
+  width:100%;padding:15px;
+  background:var(--accent);color:#fff;border:none;border-radius:50px;
+  font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;
+  letter-spacing:0.04em;cursor:pointer;transition:all 0.22s;margin-top:8px;
+  box-shadow:0 4px 20px var(--accent-glow);
+}
+.go-btn:hover{background:#b8733d;transform:translateY(-1px);box-shadow:0 8px 28px var(--accent-glow)}
+.go-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* Loading */
+.loading{display:none;text-align:center;padding:70px 0}
+.loading.on{display:block}
+.lflower{animation:bloom 1.5s ease-in-out infinite;display:inline-block}
+@keyframes bloom{0%,100%{transform:scale(1) rotate(-5deg)}50%{transform:scale(1.15) rotate(5deg)}}
+.ltxt{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:13px;color:var(--muted);margin-top:16px;letter-spacing:0.08em}
+
+/* ── RESULTS ── */
+.results{display:none}
+.results.on{display:block;animation:fadeUp 0.5s ease both}
+
+/* Mood banner */
+.mood-banner{
+  border-radius:16px;padding:24px 28px;margin-bottom:20px;
+  border:1.5px solid transparent;position:relative;overflow:hidden;
+  transition:background 0.5s,border-color 0.5s;
+}
+.mood-banner::before{content:'';position:absolute;inset:0;opacity:0.15;background:radial-gradient(ellipse at top right,white,transparent)}
+.mood-banner-top{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.mood-emoji-big{font-size:38px;line-height:1}
+.mood-name{font-family:'DM Serif Display',serif;font-size:24px;font-style:italic}
+.mood-body{font-size:13px;font-weight:300;line-height:1.85;opacity:0.85;white-space:pre-line}
+
+/* Result cards */
+.rcards{display:flex;flex-direction:column;gap:12px;margin-bottom:22px}
+.rcard{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:20px 22px;position:relative;overflow:hidden;
+  animation:fadeUp 0.5s ease both;
+}
+.rcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:2px}
+.rcard.praise::before{background:var(--mood-happy)}
+.rcard.feedback::before{background:var(--mood-touched)}
+.rcard.growth::before{background:var(--mood-excited)}
+
+.rlabel{
+  font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:9px;font-weight:700;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;
+}
+.rcard-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:8px;line-height:1.3}
+.rbody{font-size:13px;font-weight:300;color:var(--dim);line-height:1.9;white-space:pre-line;letter-spacing:0.02em}
+
+/* Trend bar */
+.trend-meter{margin-top:12px;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.trend-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--mood-hurt),var(--mood-happy));transition:width 1.2s ease}
+.trend-score-txt{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:10px;color:var(--muted);margin-top:6px;font-weight:600}
+
+.save-bar{
+  background:rgba(168,181,162,0.18);border:1.5px solid rgba(168,181,162,0.5);
+  border-radius:10px;padding:12px 18px;font-family:'Quicksand','Noto Sans TC',sans-serif;
+  font-size:12px;color:#7a9a74;text-align:center;margin-bottom:14px;
+  letter-spacing:0.05em;display:none;font-weight:600;
+}
+
+.btn-row{display:flex;gap:10px;margin-top:6px}
+.outline-btn{flex:1;padding:12px;background:none;color:var(--muted);border:1.5px solid var(--border);border-radius:50px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.outline-btn:hover{border-color:var(--accent);color:var(--accent)}
+.filled-btn{flex:1;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:50px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.filled-btn:hover{background:#b8733d}
+.err{font-size:12px;color:#b85050;background:rgba(184,80,80,0.08);border:1.5px solid rgba(184,80,80,0.2);border-radius:8px;padding:11px 16px;margin-top:10px;text-align:center;display:none}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.chip{padding:5px 13px;border-radius:16px;border:1.5px solid var(--border);background:var(--surface);font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.17s;user-select:none}
+.chip:hover{border-color:var(--accent);color:var(--dim)}
+.chip.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+
+/* person row */
+.person-row{display:flex;gap:8px}
+.person-row .finp{flex:1}
+.recent-btn-sm{
+  padding:13px 14px;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:10px;font-size:11px;color:var(--muted);white-space:nowrap;
+  cursor:pointer;transition:all 0.2s;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:600;
+}
+.recent-btn-sm:hover{border-color:var(--accent);color:var(--accent)}
+#recentDropdown{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;margin-top:5px;overflow:hidden;box-shadow:0 6px 24px var(--shadow-md)}
+
+/* ── MOOD FLOWER CHART ── */
+.mood-flower-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:32px;padding:24px 20px 20px;background:var(--surface);border:1.5px solid var(--border);border-radius:18px;animation:fadeUp 0.5s ease both}
+.mood-flower-title{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
+.mood-flower-svg{display:block}
+.mood-flower-legend{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;margin-top:16px;max-width:340px}
+.mfl-item{display:flex;align-items:center;gap:5px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:10px;font-weight:600;color:var(--dim)}
+.mfl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.mood-flower-empty{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:12px;color:var(--muted);padding:20px 0;text-align:center}
+
+/* ── ARCHIVE PAGE ── */
+.arch-tabs{display:flex;gap:10px;margin-bottom:28px;border-bottom:1.5px solid var(--border);padding-bottom:0}
+.arch-tab{
+  padding:10px 20px;border:none;background:none;
+  font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:13px;font-weight:600;
+  color:var(--muted);cursor:pointer;transition:all 0.2s;
+  border-bottom:2.5px solid transparent;margin-bottom:-2px;letter-spacing:0.03em;
+}
+.arch-tab:hover{color:var(--dim)}
+.arch-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.arch-list{display:flex;flex-direction:column;gap:10px}
+
+/* Journal archive item */
+.j-item{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:18px 20px;cursor:pointer;transition:all 0.22s;position:relative;
+  animation:fadeUp 0.4s ease both;
+}
+.j-item:hover{border-color:var(--accent);box-shadow:0 4px 20px var(--shadow);transform:translateY(-1px)}
+.j-item-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.j-mood-pill{
+  display:flex;align-items:center;gap:6px;
+  padding:4px 12px;border-radius:20px;font-family:'Quicksand','Noto Sans TC',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:0.05em;
+}
+.j-date{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:10px;color:var(--muted);font-weight:600;margin-left:auto;padding-right:4px}
+.j-summary{font-family:'Lora',serif;font-size:17px;font-weight:600;font-style:normal;color:var(--text);margin-bottom:5px;line-height:1.25}
+.j-preview{font-size:11px;color:var(--muted);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.item-delete{
+  background:rgba(184,80,80,0.08);border:1px solid rgba(184,80,80,0.2);
+  color:#c05050;font-size:11px;font-weight:600;
+  cursor:pointer;padding:3px 8px;border-radius:6px;
+  font-family:'Quicksand','Noto Sans TC',sans-serif;letter-spacing:0.04em;
+  transition:all 0.2s;flex-shrink:0;
+}
+.item-delete:hover{background:rgba(184,80,80,0.15);border-color:rgba(184,80,80,0.4)}
+
+.p-item{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:18px 20px 36px;cursor:pointer;transition:all 0.22s;position:relative;
+  animation:fadeUp 0.4s ease both;
+}
+.p-item:hover{border-color:var(--accent);box-shadow:0 4px 20px var(--shadow);transform:translateY(-1px)}
+.p-item-top{display:flex;align-items:center;gap:12px;margin-bottom:8px;padding-right:56px}
+.p-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--accent-soft);border:1.5px solid var(--accent);flex-shrink:0}
+.p-name{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text)}
+.p-cat{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:10px;color:var(--muted);font-weight:600;background:var(--bg2);padding:3px 10px;border-radius:10px;border:1px solid var(--border)}
+.p-last{font-size:11px;color:var(--muted);margin-bottom:5px}
+.p-preview{font-size:11px;color:var(--muted);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.p-count{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:9px;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-top:6px}
+
+.empty-state{text-align:center;padding:70px 20px}
+.empty-icon{opacity:0.3;margin-bottom:14px;display:block}
+.empty-txt{font-size:13px;color:var(--muted);line-height:1.7;font-family:'Quicksand','Noto Sans TC',sans-serif}
+
+/* ── PERSON DETAIL ── */
+.back-btn{
+  background:none;border:1.5px solid var(--border);color:var(--muted);
+  border-radius:20px;padding:7px 16px;font-family:'Quicksand','Noto Sans TC',sans-serif;
+  font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:24px;display:inline-block;
+}
+.back-btn:hover{border-color:var(--accent);color:var(--accent)}
+.detail-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1.5px solid var(--border)}
+.detail-avatar{width:52px;height:52px;border-radius:50%;background:var(--accent-soft);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px}
+.detail-name{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text)}
+.detail-meta{font-size:11px;color:var(--muted);margin-top:3px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:600}
+
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;gap:16px;padding-bottom:24px;position:relative;animation:fadeUp 0.4s ease both}
+.tl-item::before{content:'';position:absolute;left:8px;top:22px;bottom:0;width:1px;background:var(--border)}
+.tl-item:last-child::before{display:none}
+.tl-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--accent);background:var(--surface);flex-shrink:0;margin-top:2px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;font-size:8px}
+.tl-body{flex:1}
+.tl-date{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.tl-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all 0.2s;position:relative}
+.tl-card:hover{border-color:var(--accent)}
+.tl-mood{font-family:'Lora',serif;font-size:13px;font-style:italic;color:var(--accent);margin-bottom:5px}
+.tl-preview{font-size:11px;color:var(--muted);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.tl-del{position:absolute;top:8px;right:10px;background:rgba(184,80,80,0.08);border:1px solid rgba(184,80,80,0.2);color:#c05050;font-size:10px;font-weight:600;cursor:pointer;padding:2px 7px;border-radius:5px;font-family:'Quicksand','Noto Sans TC',sans-serif;transition:all 0.2s}
+.tl-del:hover{background:rgba(184,80,80,0.15)}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(61,46,34,0.4);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.on{display:flex}
+.modal{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;max-width:680px;width:100%;max-height:88vh;overflow-y:auto;padding:28px;box-shadow:0 20px 60px var(--shadow-md)}
+.modal-close{float:right;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:0;transition:color 0.2s}
+.modal-close:hover{color:var(--accent)}
+.modal-date{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:block}
+.modal-orig{background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:18px}
+.modal-orig-label{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.modal-orig-text{font-size:13px;font-weight:300;color:var(--dim);line-height:1.85;white-space:pre-line}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.rcard:nth-child(1){animation-delay:0.05s}
+.rcard:nth-child(2){animation-delay:0.1s}
+.rcard:nth-child(3){animation-delay:0.15s}
+.rcard:nth-child(4){animation-delay:0.2s}
+.rcard:nth-child(5){animation-delay:0.25s}
+</style>
+</head>
+<body>
+
+<!-- Floating tulips -->
+<div class="petal" style="left:5%;animation-duration:18s;animation-delay:0s"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 2 C12 7 7 12 2 12 C7 12 12 17 12 22 C12 17 17 12 22 12 C17 12 12 7 12 2Z" fill="#c8845a" opacity="0.45"/></svg></div>
+<div class="petal" style="left:18%;animation-duration:22s;animation-delay:3s"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 2 C12 7 7 12 2 12 C7 12 12 17 12 22 C12 17 17 12 22 12 C17 12 12 7 12 2Z" fill="#C4A060" opacity="0.35"/></svg></div>
+<div class="petal" style="left:35%;animation-duration:19s;animation-delay:7s"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 2 C12 7 7 12 2 12 C7 12 12 17 12 22 C12 17 17 12 22 12 C17 12 12 7 12 2Z" fill="#c8845a" opacity="0.40"/></svg></div>
+<div class="petal" style="left:55%;animation-duration:16s;animation-delay:5s"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 2 C12 7 7 12 2 12 C7 12 12 17 12 22 C12 17 17 12 22 12 C17 12 12 7 12 2Z" fill="#E0CC88" opacity="0.30"/></svg></div>
+<div class="petal" style="left:72%;animation-duration:21s;animation-delay:1s"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2 C12 7 7 12 2 12 C7 12 12 17 12 22 C12 17 17 12 22 12 C17 12 12 7 12 2Z" fill="#C4A060" opacity="0.38"/></svg></div>
+<div class="petal" style="left:88%;animation-duration:24s;animation-delay:9s"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 2 C12 7 7 12 2 12 C7 12 12 17 12 22 C12 17 17 12 22 12 C17 12 12 7 12 2Z" fill="#c8845a" opacity="0.35"/></svg></div>
+
+
+
+
+<!-- ── NAV ── -->
+<nav class="nav" id="mainNav">
+  <div class="nav-logo">Mirumi <span><svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(16,16)"><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(72)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(144)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(216)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(288)"/><circle cx="0" cy="0" r="3.5" fill="#C4788A"/></g></svg></span></div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <div class="nav-pills">
+      <button class="nav-pill active" onclick="showPage('home')" id="navHome" data-t="nav_home">Home</button>
+      <button class="nav-pill" onclick="showPage('journal')" id="navJournal" data-t="nav_journal">Journal</button>
+      <button class="nav-pill" onclick="showPage('archive')" id="navArchive" data-t="nav_archive">Archive</button>
+    </div>
+<span id="trialPill" style="display:none;align-items:center;padding:0 12px;height:34px;border-radius:20px;border:1.5px solid var(--border);font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;color:var(--accent);flex-shrink:0;white-space:nowrap"></span>
+    <button id="langToggleBtn" onclick="toggleLang()" title="Language" style="background:none;border:1.5px solid var(--border);border-radius:20px;padding:0 12px;height:34px;cursor:pointer;font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:12px;font-weight:700;color:var(--muted);flex-shrink:0;transition:all 0.2s" onmouseover="this.style.borderColor='var(--border-hi)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">中</button>
+    <button id="settingsBtn" onclick="openSettings()" title="Settings" style="background:none;border:1.5px solid var(--border);border-radius:50%;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px;transition:all 0.2s;position:relative;flex-shrink:0" onmouseover="this.style.borderColor='var(--border-hi)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙</button>
+  </div>
+</nav>
+
+<!-- Consent Modal -->
+<div id="consentOverlay" style="display:none;position:fixed;inset:0;background:rgba(61,46,34,0.45);backdrop-filter:blur(6px);z-index:300;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:22px;padding:36px 30px;width:min(440px,92vw);box-shadow:0 20px 60px rgba(61,46,34,0.18)">
+    <div style="font-size:28px;margin-bottom:12px;text-align:center">🔒</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:21px;color:var(--text);margin-bottom:8px;text-align:center" data-t="consent_title">Before you share</div>
+    <div style="font-size:13px;color:var(--dim);line-height:1.75;margin-bottom:6px" data-t="consent_p1_html">
+      When you submit a journal entry, that text is sent to <strong style="color:var(--text)">Anthropic's API</strong> so Claude can analyze it. This is how the emotional insights are generated.
+    </div>
+    <div style="font-size:13px;color:var(--dim);line-height:1.75;margin-bottom:20px" data-t="consent_p2_html">
+      <strong style="color:var(--text)">What this means:</strong> Your entries are <em>not</em> stored on any Mirumi server. However, they do travel to Anthropic for processing. Anthropic's API does not use your data to train models. <a href="https://www.anthropic.com/privacy" target="_blank" style="color:var(--accent);text-decoration:none">Read Anthropic's privacy policy →</a>
+    </div>
+    <div style="background:var(--bg2);border-radius:12px;padding:14px 16px;margin-bottom:22px;font-size:12px;color:var(--muted);line-height:1.6" data-t="consent_tip_html">
+      💡 <strong>Tip:</strong> You control what you share. You can write freely and choose not to submit entries you want to keep fully private.
+    </div>
+    <div style="display:flex;gap:10px">
+      <button onclick="giveConsent()" data-t="consent_ok" style="flex:1;background:var(--accent);color:white;border:none;border-radius:12px;padding:13px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:700;font-size:13px;cursor:pointer;letter-spacing:0.04em;transition:opacity 0.2s" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">I understand — continue</button>
+      <button onclick="declineConsent()" data-t="consent_cancel" style="padding:13px 18px;background:none;border:1.5px solid var(--border);border-radius:12px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:600;font-size:13px;cursor:pointer;color:var(--muted)">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div id="settingsOverlay" onclick="if(event.target===this)closeSettings()" style="display:none;position:fixed;inset:0;background:rgba(61,46,34,0.35);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:32px 28px;width:min(420px,90vw);box-shadow:0 8px 32px rgba(61,46,34,0.12)">
+    <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:14px" data-t="set_title">Settings</div>
+    <div style="background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+      <div style="font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:6px" data-t="set_code_label">Your invitation code</div>
+      <div id="trialCodeTxt" style="font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.08em;color:var(--accent)"></div>
+      <div id="trialDaysTxt" style="font-size:12px;color:var(--muted);margin-top:6px"></div>
+    </div>
+    <div style="text-align:right"><button onclick="closeSettings()" style="padding:10px 18px;background:none;border:1.5px solid var(--border);border-radius:10px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:600;font-size:12px;cursor:pointer;color:var(--muted)" data-t="set_close">Close</button></div>
+    <!-- Backup & Restore -->
+    <div style="border-top:1px solid var(--border);margin-top:22px;padding-top:20px">
+      <div style="font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Data Backup</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">Switching browsers? Download a backup of all your journals, then restore it in the new browser.</div>
+      <div style="display:flex;gap:10px">
+        <button onclick="backupData()" style="flex:1;background:var(--bg2);color:var(--dim);border:1.5px solid var(--border);border-radius:10px;padding:11px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:700;font-size:12px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--border-hi)'" onmouseout="this.style.borderColor='var(--border)'">↓ Backup</button>
+        <button onclick="triggerRestore()" style="flex:1;background:var(--bg2);color:var(--dim);border:1.5px solid var(--border);border-radius:10px;padding:11px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:700;font-size:12px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--border-hi)'" onmouseout="this.style.borderColor='var(--border)'">↑ Restore</button>
+      </div>
+      <div id="backupMsg" style="margin-top:10px;font-size:12px;text-align:center;display:none;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:600"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HOME PAGE ══ -->
+<div class="page" id="page-home">
+<div class="container">
+  <div class="home-hero">
+    <div class="home-greeting" id="homeGreeting">Good morning</div>
+    <h1 class="home-title" data-t="home_title_html">How are you <em>today?</em></h1>
+    <p class="home-sub" data-t="home_sub">Track your mood, reflect on your feelings — every day deserves to be seen.</p>
+  </div>
+
+  <div class="home-cards">
+    <div class="home-card" style="--card-tint:rgba(232,213,163,0.15)" onclick="showPage('journal')">
+      <span class="hc-icon"><svg width="36" height="36" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="21" height="28" rx="5" fill="#a8907c"/><rect x="7" y="7" width="9" height="3.5" rx="1.75" fill="#fdf8f3"/><circle cx="26.5" cy="10" r="2" fill="#c8b09a"/><circle cx="26.5" cy="16" r="2" fill="#c8b09a"/><circle cx="26.5" cy="22" r="2" fill="#c8b09a"/></svg></span>
+      <div class="hc-title" data-t="hc_journal">Daily Journal</div>
+      <div class="hc-desc" data-t="hc_journal_desc">Write about your day. AI reads your mood and cheers you on.</div>
+      <span class="hc-arrow">→</span>
+    </div>
+  </div>
+
+  <div class="recent-strip">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div class="strip-title" data-t="recent_title" style="margin-bottom:0">Recent entries</div><svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M12 2L13.4 9.6L22 12L13.4 14.4L12 22L10.6 14.4L2 12L10.6 9.6Z" fill="#c8845a" opacity="0.65"/></svg></div>
+    <div id="homeRecentList"></div>
+  </div>
+</div>
+</div>
+
+<!-- ══ JOURNAL PAGE ══ -->
+<div class="page" id="page-journal">
+<div class="container">
+  <div class="page-header">
+    <span class="ph-badge" data-t="j_badge">Daily Journal</span>
+    <h2 class="ph-title" data-t="j_title_html">Well Done! You <em>survived today!</em></h2>
+    <p class="ph-sub" data-t="j_sub">Write about your day and let's look back on it together.</p>
+  </div>
+
+
+  <div id="jForm">
+    <div class="field">
+      <label class="fl" for="jInput"><span>✦</span><span data-t="j_fl1">What happened today?</span></label>
+      <textarea class="ftx" id="jInput" rows="5" data-placeholder-t="j_ph1"></textarea>
+      <div class="fhint" id="jCharHint" data-t="j_hint">Write as much as you like</div>
+    </div>
+    <button class="go-btn" onclick="runJournal()" data-t="j_btn">Let today be seen →</button>
+    <div class="err" id="jErr"></div>
+  </div>
+
+  <div class="loading" id="jLoading">
+    <div class="lflower"><svg width="40" height="40" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(16,16)"><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(72)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(144)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(216)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(288)"/><circle cx="0" cy="0" r="3.5" fill="#C4788A"/></g></svg></div>
+    <div class="ltxt" data-t="j_loading">Reading your day…</div>
+  </div>
+
+  <div class="results" id="jResults">
+    <div class="save-bar" id="jSaveBanner"></div>
+    <div class="mood-banner" id="jMoodBanner">
+      <div class="mood-banner-top">
+        <span class="mood-emoji-big" id="jMoodEmoji">🌸</span>
+        <span class="mood-name" id="jMoodLabel"></span>
+      </div>
+      <div class="mood-body" id="jMoodBody"></div>
+    </div>
+    <div class="rcards" id="jCards"></div>
+    <div class="btn-row">
+      <button class="outline-btn" onclick="resetJournal()" data-t="j_new">← New entry</button>
+      <button class="filled-btn" onclick="showPage('archive')" data-t="j_archive">View archive →</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ ARCHIVE PAGE ══ -->
+<div class="page" id="page-archive">
+<div class="container">
+  <div class="page-header">
+    <span class="ph-badge" data-t="arch_badge">Archive</span>
+    <h2 class="ph-title" data-t="arch_title_html">The days that <em>made you</em></h2>
+  </div>
+  <!-- Mood flower chart -->
+  <div id="moodFlowerWrap"></div>
+
+  <div class="arch-tabs">
+    <button class="arch-tab active" id="archTabJournal" onclick="switchArchiveTab('journal')" data-t="arch_tab_j">Journal</button>
+  </div>
+  <div id="archContent"></div>
+
+  <!-- ── Export Report ── -->
+  <div style="margin-top:40px;padding:24px 26px;background:rgba(200,132,90,0.06);border:1.5px solid var(--border);border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+    <div>
+      <div style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);margin-bottom:4px" data-t="arch_dl_title">Download Report</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6;max-width:380px" data-t="arch_dl_desc">Export your journal data as a JSON file</div>
+    </div>
+    <button onclick="exportTherapistJSON()" style="padding:12px 24px;background:var(--accent);color:#fff;border:none;border-radius:50px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;box-shadow:0 4px 16px var(--accent-glow);letter-spacing:0.04em" onmouseover="this.style.background='#b8733d'" onmouseout="this.style.background='var(--accent)'">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:6px"><path d="M12 3v13M7 11l5 5 5-5M4 20h16" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Download JSON
+    </button>
+  </div>
+  <div id="exportBanner" style="display:none;margin-top:10px;background:rgba(168,181,162,0.18);border:1.5px solid rgba(168,181,162,0.5);border-radius:10px;padding:11px 18px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:12px;color:#7a9a74;text-align:center;letter-spacing:0.05em;font-weight:600"></div>
+
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <span class="modal-date" id="modalDate"></span>
+    <div class="modal-orig">
+      <div class="modal-orig-label" data-t="modal_orig_label">Your original entry</div>
+      <div class="modal-orig-text" id="modalOrig"></div>
+    </div>
+    <div id="modalCards"></div>
+  </div>
+</div>
+
+<!-- ── Language landing page ── -->
+<div id="landingOverlay" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:500;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:40px">
+  <div style="animation:fadeUp 0.7s ease both">
+    <div style="font-family:'DM Serif Display',serif;font-size:clamp(36px,8vw,64px);color:var(--accent);letter-spacing:0.01em;display:flex;align-items:center;gap:16px;justify-content:center">
+      <span style="font-size:0.45em;opacity:0.7">✦</span>
+      Mirumi
+      <span style="font-size:0.45em;opacity:0.7">✦</span>
+    </div>
+    <div style="font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:var(--muted);margin-top:10px;margin-bottom:48px">See yourself clearly</div>
+    <div style="display:flex;gap:14px;justify-content:center">
+      <button onclick="pickLang('zh')" style="padding:14px 32px;border-radius:99px;border:1.5px solid var(--border);background:var(--surface);font-family:'Noto Sans TC','Quicksand',sans-serif;font-size:15px;font-weight:600;color:var(--text);cursor:pointer;transition:all 0.2s;letter-spacing:0.02em" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">繁體中文</button>
+      <button onclick="pickLang('en')" style="padding:14px 32px;border-radius:99px;border:1.5px solid var(--border);background:var(--surface);font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:15px;font-weight:600;color:var(--text);cursor:pointer;transition:all 0.2s;letter-spacing:0.02em" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">English</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Access code overlay ── -->
+<div id="codeOverlay" style="display:none;position:fixed;inset:0;background:rgba(61,46,34,0.5);backdrop-filter:blur(8px);z-index:400;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:22px;padding:38px 32px;width:min(420px,92vw);box-shadow:0 20px 60px rgba(61,46,34,0.2);text-align:center">
+    <div style="font-size:30px;margin-bottom:10px">🌸</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:8px" data-t="code_title">Welcome to Mirumi</div>
+    <div style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:20px" data-t="code_sub">Enter your invitation code to start your free 7-day journey.</div>
+    <input id="codeInput" type="text" placeholder="MIRUMI-XXXX" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:13px 14px;font-size:14px;text-align:center;letter-spacing:0.08em;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:700;background:var(--bg);color:var(--text);outline:none;margin-bottom:14px;text-transform:uppercase" onkeydown="if(event.key==='Enter')submitCode()"/>
+    <button onclick="submitCode()" id="codeBtn" style="width:100%;background:var(--accent);color:#fff;border:none;border-radius:12px;padding:14px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:700;font-size:14px;cursor:pointer;letter-spacing:0.04em" data-t="code_btn">Start my 7 days →</button>
+    <div id="codeErr" style="display:none;margin-top:12px;font-size:12px;color:#C45050"></div>
+  </div>
+</div>
+
+<!-- ── Trial ended overlay ── -->
+<div id="expiredOverlay" style="display:none;position:fixed;inset:0;background:rgba(61,46,34,0.55);backdrop-filter:blur(8px);z-index:400;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:22px;padding:38px 32px;width:min(440px,92vw);box-shadow:0 20px 60px rgba(61,46,34,0.2);text-align:center">
+    <div style="font-size:30px;margin-bottom:10px">💜</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:8px" data-t="exp_title">Your 7 days are complete</div>
+    <div style="font-size:13px;color:var(--dim);line-height:1.75;margin-bottom:22px" data-t="exp_body">Thank you for spending this week with Mirumi. Your journals stay saved in this browser. One last thing — please share your feedback. It means the world.</div>
+    <a id="feedbackLink" href="#" target="_blank" style="display:block;background:var(--accent);color:#fff;border-radius:12px;padding:14px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:700;font-size:14px;text-decoration:none;letter-spacing:0.04em" data-t="exp_btn">Share my feedback →</a>
+    <button onclick="backupData()" style="display:block;width:100%;margin-top:10px;background:none;border:1.5px solid var(--border);border-radius:12px;padding:13px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:600;font-size:13px;color:var(--dim);cursor:pointer" data-t="exp_dl_btn">Download my journals</button>
+    <button onclick="enterNewCode()" style="display:block;width:100%;margin-top:8px;background:none;border:none;padding:10px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline" data-t="exp_new_code">Enter a different code</button>
+  </div>
+</div>
+
+<script>
+// ── Trial configuration ──
+const PROXY_URL='https://mirumi-proxy.yuchun241128.workers.dev'; // e.g. https://mirumi-proxy.yourname.workers.dev  (no trailing slash)
+const FEEDBACK_FORM_URL='https://forms.gle/B9o6HjLQtXMC1EKCA';
+const TRIAL_DAYS=7;
+
+// ── Access code ──
+function getAccessCode(){return localStorage.getItem('mirumi_access_code')||'';}
+function getActivatedAt(){return localStorage.getItem('mirumi_activated_at')||'';}
+function trialDay(){const a=getActivatedAt();if(!a)return 1;return Math.min(TRIAL_DAYS,Math.floor((Date.now()-new Date(a).getTime())/86400000)+1);}
+function trialExpired(){const a=getActivatedAt();if(!a)return false;return (Date.now()-new Date(a).getTime())/86400000>=TRIAL_DAYS;}
+function showCodeOverlay(){document.getElementById('codeOverlay').style.display='flex';}
+function showExpired(){document.getElementById('feedbackLink').href=FEEDBACK_FORM_URL;document.getElementById('expiredOverlay').style.display='flex';}
+function enterNewCode(){
+  localStorage.removeItem('mirumi_access_code');
+  localStorage.removeItem('mirumi_activated_at');
+  document.getElementById('expiredOverlay').style.display='none';
+  document.getElementById('codeInput').value='';
+  document.getElementById('codeErr').style.display='none';
+  showCodeOverlay();
+}
+async function submitCode(){
+  const inp=document.getElementById('codeInput');
+  const code=inp.value.trim().toUpperCase();
+  const err=document.getElementById('codeErr');
+  err.style.display='none';
+  if(!code){err.textContent=t('code_err');err.style.display='block';return;}
+  const btn=document.getElementById('codeBtn');btn.disabled=true;btn.style.opacity='0.6';
+  try{
+    const res=await fetch(PROXY_URL+'/validate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});
+    const data=await res.json();
+    if(data.ok){
+      localStorage.setItem('mirumi_access_code',code);
+      localStorage.setItem('mirumi_activated_at',data.activatedAt);
+      document.getElementById('codeOverlay').style.display='none';
+      updateTrialPill();
+    }else if(data.error==='expired'){
+      localStorage.setItem('mirumi_access_code',code);
+      document.getElementById('codeOverlay').style.display='none';
+      showExpired();
+    }else{
+      err.textContent=t('code_err');err.style.display='block';
+    }
+  }catch(_){err.textContent=t('code_err_net');err.style.display='block';}
+  btn.disabled=false;btn.style.opacity='1';
+}
+function updateTrialPill(){
+  const p=document.getElementById('trialPill');
+  if(!getAccessCode()){p.style.display='none';return;}
+  p.style.display='inline-flex';
+  p.textContent=t('trial_day').replace('{n}',trialDay());
+}
+function openSettings(){
+  document.getElementById('trialCodeTxt').textContent=getAccessCode()||'—';
+  const left=Math.max(0,TRIAL_DAYS-trialDay()+(trialExpired()?0:1));
+  document.getElementById('trialDaysTxt').textContent=trialExpired()?t('trial_over'):t('trial_left').replace('{n}',left);
+  document.getElementById('settingsOverlay').style.display='flex';
+}
+function closeSettings(){document.getElementById('settingsOverlay').style.display='none';}
+
+// ── Proxy call (the API key lives on the server, never here) ──
+async function callMirumi(prompt){
+  const res=await fetch(PROXY_URL+'/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:getAccessCode(),prompt,max_tokens:1200})});
+  const data=await res.json();
+  if(!res.ok){
+    const ec=data?.error;
+    if(ec==='invalid_code'){localStorage.removeItem('mirumi_access_code');localStorage.removeItem('mirumi_activated_at');showCodeOverlay();throw new Error('INVALID_CODE');}
+    if(ec==='expired'){showExpired();throw new Error('EXPIRED');}
+    if(ec==='daily_limit'){throw new Error('DAILY_LIMIT');}
+    throw new Error((data&&data.error&&data.error.message)||('API error '+res.status));
+  }
+  return data;
+}
+
+
+
+// ══ i18n ══
+const T={
+  zh:{
+    nav_home:'首頁',nav_journal:'今日日記',nav_archive:'回顧',
+    home_title_html:'今天的你，<em>好嗎？</em>',
+    home_sub:'記錄心情、看見自己，每一天都值得被好好看見',
+    hc_journal:'今日日記',hc_journal_desc:'寫下今天，讓 AI 解讀你的心情、給你鼓勵與回饋',
+    
+    recent_title:'最近的紀錄',
+    j_badge:'Daily Journal',j_title_html:'今日的你，<em>很不錯</em>',
+    j_sub:'寫下今天發生的事，讓我們一起回望這一天',
+    j_fl1:'今天發生了什麼？',j_ph1:'不管大事小事都可以寫，心情、遇到的人、讓你開心或煩惱的事……',
+    j_hint:'盡量寫，越多越好',j_btn:'讓今天被好好看見 →',
+    j_loading:'正在閱讀你的今天⋯⋯',j_new:'← 新的記錄',j_archive:'查看回顧 →',
+    j_saved:'✓ 已儲存到日記本',j_err:'請多寫幾句話',
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    arch_badge:'Archive',arch_title_html:'你走過的<em>每一天</em>',
+    arch_tab_j:'日記',
+    back:'← 返回',modal_orig_label:'你當時說的',
+    entries:'次紀錄',no_j:'還沒有日記記錄，去寫下今天吧',
+    arch_export_btn:'產生諮商報告',arch_export_desc:'將你的日記匯出為 JSON 檔',arch_export_done:'✓ 報告已下載',
+    arch_dl_title:'下載報告',arch_dl_desc:'將你的日記匯出為 JSON 檔',
+    del_entry:'確定刪除這筆記錄嗎？',
+                j_praise:'你值得被看見',j_feedback:'給你的一點回饋',j_growth:'成為更好的自己',
+    
+    
+    
+    code_title:'歡迎來到 Mirumi',code_sub:'輸入你的邀請碼，開始免費 7 天的心靈旅程',code_btn:'開始我的 7 天 →',
+    code_err:'這個邀請碼好像不對，再確認一下，或問問 YuChun 💌',code_err_net:'連線出了點問題，請再試一次',
+    trial_day:'第 {n} 天 · 共 7 天',trial_left:'剩餘 {n} 天',trial_over:'試用已結束',
+    exp_title:'你的 7 天旅程完成了',exp_body:'謝謝你這一週與 Mirumi 同行。你的日記仍保存在這個瀏覽器裡。最後一件小事——請分享你的使用回饋，這對我們意義重大。',exp_btn:'分享我的回饋 →',exp_dl_btn:'下載我的日記',exp_new_code:'輸入其他邀請碼',
+    limit_msg:'今天的分析次數已用完，明天見 🌙',err_generic:'發生問題，請再試一次',
+    set_title:'設定',set_code_label:'你的邀請碼',set_close:'關閉',
+    mf_title:'你的情緒旅程',mf_better:'較好',mf_harder:'較難',mf_empty:'開始寫日記，看見你的心情流動 🌸',mf_none:'還沒有情緒分析',
+    consent_title:'在分享之前',
+    consent_p1_html:'當你送出日記時，這段文字會傳送到 <strong style="color:var(--text)">Anthropic 的 API</strong>，由 Claude 進行分析——這就是情緒洞察的來源。',
+    consent_p2_html:'<strong style="color:var(--text)">這代表：</strong>你的記錄<em>不會</em>儲存在任何 Mirumi 伺服器上，但會傳送給 Anthropic 處理。Anthropic 的 API 不會使用你的資料訓練模型。<a href="https://www.anthropic.com/privacy" target="_blank" style="color:var(--accent);text-decoration:none">閱讀 Anthropic 的隱私政策 →</a>',
+    consent_tip_html:'💡 <strong>小提醒：</strong>你可以自由決定要分享什麼。想保留完全私密的內容，可以選擇不送出。',
+    consent_ok:'我了解了，繼續',consent_cancel:'取消',
+    greet_morning:'早安，今天也要好好的 <svg width="13" height="13" viewBox="0 0 32 32" fill="none" style="vertical-align:middle;display:inline-block"><circle cx="16" cy="16" r="5.5" fill="#c8845a"/><rect x="14.5" y="1.5" width="3" height="5" rx="1.5" fill="#c8845a"/><rect x="14.5" y="25.5" width="3" height="5" rx="1.5" fill="#c8845a"/><rect x="25.5" y="14.5" width="5" height="3" rx="1.5" fill="#c8845a"/><rect x="1.5" y="14.5" width="5" height="3" rx="1.5" fill="#c8845a"/><rect x="22" y="5.5" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(45 22 5.5)"/><rect x="4.5" y="21" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(45 4.5 21)"/><rect x="22" y="21" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(-45 22 21)"/><rect x="4.5" y="5.5" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(-45 4.5 5.5)"/></svg>',greet_afternoon:'午安，記得吃飯喔 <svg width="11" height="14" viewBox="0 0 24 32" fill="none" style="vertical-align:middle;display:inline-block"><line x1="12" y1="32" x2="12" y2="8" stroke="#a8907c" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="8" cy="20" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(-30 8 20)"/><ellipse cx="16" cy="16" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(30 16 16)"/><ellipse cx="8" cy="12" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(-20 8 12)"/><ellipse cx="16" cy="8" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(20 16 8)"/></svg>',greet_evening:'晚安，今天辛苦了 <svg width="14" height="14" viewBox="0 0 32 32" fill="none" style="vertical-align:middle;display:inline-block"><path d="M20 5C11 4 4 9 4 16C4 23 11 28 20 27C16 25 14 21 14 16C14 11 16 7 20 5Z" fill="#F5D870"/><path d="M20 5C11 4 4 9 4 16C4 23 11 28 20 27C16 25 14 21 14 16C14 11 16 7 20 5Z" fill="none" stroke="#C8A020" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+  },
+  en:{
+    
+    arch_dl_title:'Download Report',arch_dl_desc:'Export your journal data as a JSON file',
+    code_title:'Welcome to Mirumi',code_sub:'Enter your invitation code to start your free 7-day journey.',code_btn:'Start my 7 days →',
+    code_err:"That code doesn't look right — double-check it, or ask YuChun 💌",code_err_net:'Connection problem — please try again.',
+    trial_day:'Day {n} of 7',trial_left:'{n} day(s) left',trial_over:'Trial ended',
+    exp_title:'Your 7 days are complete',exp_body:'Thank you for spending this week with Mirumi. Your journals stay saved in this browser. One last thing — please share your feedback. It means the world.',exp_btn:'Share my feedback →',exp_dl_btn:'Download my journals',exp_new_code:'Enter a different code',
+    limit_msg:"You've reached today's limit — see you tomorrow 🌙",err_generic:'Something went wrong. Please try again.',
+    set_title:'Settings',set_code_label:'Your invitation code',set_close:'Close',
+    mf_title:'Your Emotional Journey',mf_better:'better',mf_harder:'harder',mf_empty:'Start journaling to see your mood flow 🌸',mf_none:'No moods analyzed yet',
+    consent_title:'Before you share',
+    consent_p1_html:`When you submit a journal entry, that text is sent to <strong style="color:var(--text)">Anthropic's API</strong> so Claude can analyze it. This is how the emotional insights are generated.`,
+    consent_p2_html:`<strong style="color:var(--text)">What this means:</strong> Your entries are <em>not</em> stored on any Mirumi server. However, they do travel to Anthropic for processing. Anthropic's API does not use your data to train models. <a href="https://www.anthropic.com/privacy" target="_blank" style="color:var(--accent);text-decoration:none">Read Anthropic's privacy policy →</a>`,
+    consent_tip_html:`💡 <strong>Tip:</strong> You control what you share. You can write freely and choose not to submit entries you want to keep fully private.`,
+    consent_ok:'I understand — continue',consent_cancel:'Cancel',
+    nav_home:'Home',nav_journal:'Journal',nav_archive:'Archive',
+    home_title_html:'How are you <em>today?</em>',
+    home_sub:'Track your mood, reflect on your feelings — every day deserves to be seen.',
+    hc_journal:'Daily Journal',hc_journal_desc:'Write about your day. AI reads your mood and cheers you on.',
+    
+    recent_title:'Recent entries',
+    j_badge:'Daily Journal',j_title_html:'Well Done! You <em>survived today!</em>',
+    j_sub:'Write about your day and let\'s look back on it together.',
+    j_fl1:'What happened today?',j_ph1:'Big things, small things, feelings, people you met, anything on your mind…',
+    j_hint:'Write as much as you like',j_btn:'Let today be seen →',
+    j_loading:'Reading your day…',j_new:'← New entry',j_archive:'View archive →',
+    j_saved:'✓ Saved to journal',j_err:'Write a little more, even a few sentences',
+    arch_badge:'Archive',arch_title_html:'The days that <em>made you</em>',
+    arch_tab_j:'Journal',
+    back:'← Back',modal_orig_label:'Your original entry',
+    entries:'entries',no_j:'No journal entries yet. Write about today',
+    arch_export_btn:'Generate Therapist Report',arch_export_desc:'Export your journal data as a JSON file for your counselor',arch_export_done:'✓ Report downloaded',
+    del_entry:'Delete this entry?',
+                j_praise:'You deserve to be seen',j_feedback:'A little feedback',j_growth:'Growing into yourself',
+    greet_morning:'Good morning <svg width="13" height="13" viewBox="0 0 32 32" fill="none" style="vertical-align:middle;display:inline-block"><circle cx="16" cy="16" r="5.5" fill="#c8845a"/><rect x="14.5" y="1.5" width="3" height="5" rx="1.5" fill="#c8845a"/><rect x="14.5" y="25.5" width="3" height="5" rx="1.5" fill="#c8845a"/><rect x="25.5" y="14.5" width="5" height="3" rx="1.5" fill="#c8845a"/><rect x="1.5" y="14.5" width="5" height="3" rx="1.5" fill="#c8845a"/><rect x="22" y="5.5" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(45 22 5.5)"/><rect x="4.5" y="21" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(45 4.5 21)"/><rect x="22" y="21" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(-45 22 21)"/><rect x="4.5" y="5.5" width="3" height="5" rx="1.5" fill="#c8845a" transform="rotate(-45 4.5 5.5)"/></svg>',greet_afternoon:'Good afternoon <svg width="11" height="14" viewBox="0 0 24 32" fill="none" style="vertical-align:middle;display:inline-block"><line x1="12" y1="32" x2="12" y2="8" stroke="#a8907c" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="8" cy="20" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(-30 8 20)"/><ellipse cx="16" cy="16" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(30 16 16)"/><ellipse cx="8" cy="12" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(-20 8 12)"/><ellipse cx="16" cy="8" rx="5" ry="3.5" fill="#A8B5A2" transform="rotate(20 16 8)"/></svg>',greet_evening:'Good evening <svg width="14" height="14" viewBox="0 0 32 32" fill="none" style="vertical-align:middle;display:inline-block"><path d="M20 5C11 4 4 9 4 16C4 23 11 28 20 27C16 25 14 21 14 16C14 11 16 7 20 5Z" fill="#F5D870"/><path d="M20 5C11 4 4 9 4 16C4 23 11 28 20 27C16 25 14 21 14 16C14 11 16 7 20 5Z" fill="none" stroke="#C8A020" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+  }
+};
+
+const MOOD_COLORS={
+  happy:'#E8D5A3',touched:'#A8B5A2',calm:'#B0ADB5',excited:'#D4B5B5',
+  sad:'#9BAFC4',hurt:'#8E9BAE',anxious:'#B5A8C8',angry:'#C4A09A',irritated:'#C8B09A'
+};
+const MOOD_NAMES_EN={happy:'Happy',touched:'Touched',calm:'Calm',excited:'Excited',sad:'Sad',hurt:'Hurt',anxious:'Anxious',angry:'Angry',irritated:'Irritated'};
+const MOOD_NAMES_ZH={happy:'開心愉快',touched:'感動幸福',calm:'平靜平和',excited:'期待雀躍',sad:'低落難過',hurt:'委屈傷心',anxious:'焦慮不安',angry:'憤怒',irritated:'煩躁壓抑'};
+const MOOD_EMOJIS={happy:'😊',touched:'🥰',calm:'😌',excited:'🌸',sad:'😔',hurt:'😢',anxious:'😟',angry:'😠',irritated:'😤'};
+
+const J_KEY='mirumi_journal';
+
+// ── Storage ──
+function getJournals(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(J_KEY))||[];
+    return raw.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  }catch{return[]}
+}
+function parseDate(s){return s&&String(s).length===10?new Date(String(s)+'T12:00:00'):new Date(s)}
+function saveJournal(e){const a=getJournals();a.unshift(e);localStorage.setItem(J_KEY,JSON.stringify(a))}
+function deleteJournal(id){const a=getJournals().filter(e=>String(e.id)!==String(id));localStorage.setItem(J_KEY,JSON.stringify(a))}
+
+// ── Lang (English / 繁體中文) ──
+let lang=localStorage.getItem('mirumi_lang')||'en';
+function t(k){return (T[lang]&&T[lang][k])||T.en[k]||k}
+function toggleLang(){
+  lang=lang==='zh'?'en':'zh';
+  localStorage.setItem('mirumi_lang',lang);
+  document.getElementById('langToggleBtn').textContent=lang==='zh'?'EN':'中';
+  applyLang();setGreeting();updateTrialPill();renderHomeRecent();
+  const ap=document.querySelector('.page.active')?.id?.replace('page-','');
+  if(ap==='archive'){renderMoodFlower();renderArchive(archiveTab);}
+}
+function moodName(mk){return (lang==='zh'?MOOD_NAMES_ZH:MOOD_NAMES_EN)[mk]||mk}
+function dloc(){return lang==='zh'?'zh-TW':'en-US'}
+function applyLang(){
+  document.querySelectorAll('[data-t]').forEach(el=>{const k=el.getAttribute('data-t');const v=t(k);if(k.endsWith('_html'))el.innerHTML=v;else el.textContent=v;});
+  document.querySelectorAll('[data-placeholder-t]').forEach(el=>{el.placeholder=t(el.getAttribute('data-placeholder-t'));});
+}
+function setGreeting(){
+  const h=new Date().getHours();
+  const key=h<12?'greet_morning':h<18?'greet_afternoon':'greet_evening';
+  document.getElementById('homeGreeting').innerHTML=t(key);
+}
+
+
+// ── Pages ──
+function _scrollTop(){
+  window.scrollTo(0,0);
+  document.documentElement.scrollTop=0;
+  document.body.scrollTop=0;
+  if(document.scrollingElement)document.scrollingElement.scrollTop=0;
+}
+function showPage(name){
+  _scrollTop();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-pill').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.mobile-tab').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  const navMap={home:'navHome',journal:'navJournal',archive:'navArchive'};
+  const mobileMap={home:'mtHome',journal:'mtJournal',archive:'mtArchive'};
+  if(navMap[name])document.getElementById(navMap[name]).classList.add('active');
+  if(mobileMap[name])document.getElementById(mobileMap[name]).classList.add('active');
+  if(name==='home')renderHomeRecent();
+  if(name==='archive'){renderMoodFlower();renderArchive('journal');}
+  // Force scroll after paint — catches any layout shift from rendered content
+  requestAnimationFrame(()=>{ _scrollTop(); requestAnimationFrame(_scrollTop); });
+}
+
+// ── Journal ──
+document.getElementById('jInput').addEventListener('input',function(){
+  const n=this.value.length;
+  document.getElementById('jCharHint').textContent=n>0?(lang==='zh'?`已寫 ${n} 字`:`${n} characters`):t('j_hint');
+});
+
+// ── Consent ──
+function hasConsent(){return localStorage.getItem('mirumi_consent')==='true';}
+let _pendingAction=null;
+function requireConsent(fn){
+  if(hasConsent()){fn();return;}
+  _pendingAction=fn;
+  const o=document.getElementById('consentOverlay');
+  o.style.display='flex';
+}
+function giveConsent(){
+  localStorage.setItem('mirumi_consent','true');
+  document.getElementById('consentOverlay').style.display='none';
+  if(_pendingAction){_pendingAction();_pendingAction=null;}
+}
+function declineConsent(){
+  document.getElementById('consentOverlay').style.display='none';
+  _pendingAction=null;
+}
+
+async function runJournal(){
+  requireConsent(_runJournal);
+}
+// ── C-SSRS crisis phrase detection ──
+const CSSRS_LEVELS=[
+  {level:4,phrases:["i'm going to do it","i am going to do it","i've decided to end","i have decided to end","i'm ready to end it","i am ready to end it","i will end my life","going to kill myself","going to end it all"]},
+  {level:3,phrases:["i have a plan","i've been thinking about how to","i know how i'd do it","i know how i would do it","figured out how to end","planned to end my life","i have a method to"]},
+  {level:2,phrases:["i want to kill myself","i want to die","i'm thinking about suicide","i am thinking about suicide","i want to end my life","i should just die","i'd be better off dead","i would be better off dead","thinking of suicide","thinking about ending my life","want to end everything"]},
+  {level:1,phrases:["i wish i were dead","i wish i was dead","i don't want to be here anymore","i do not want to be here","i want to disappear","life isn't worth living","life is not worth living","i don't want to live","i do not want to live","wish i could disappear","don't want to wake up","do not want to wake up","tired of living","not worth living","want to disappear forever"]}
+];
+function checkCSSRS(text){
+  const lower=text.toLowerCase();
+  for(const item of CSSRS_LEVELS){for(const phrase of item.phrases){if(lower.includes(phrase))return item.level;}}
+  return 0;
+}
+
+function renderCrisisCard(level){
+  const isZh=lang==='zh';
+  const bodies={
+    1:isZh?'最近一定很沉重。你不需要一個人扛。':'Things have been really heavy. You don\'t have to carry this alone.',
+    2:isZh?'你說的話我們都聽到了。你的感受是真實的。':'We hear you. What you\'re feeling is real and it matters.',
+    3:isZh?'我們很在乎你的安全。如果你有傷害自己的念頭，請聯繫危機專線。':'We care about your safety. If you\'re having thoughts of harming yourself, please reach out.',
+    4:isZh?'你的安全是最重要的事。請現在就撥打危機專線。':'Your safety is what matters most right now. Please reach out immediately.'
+  };
+  const body=bodies[level]||bodies[1];
+  const card=document.createElement('div');
+  card.className='rcard';
+  card.style.cssText='border-left:3px solid #8fa8c4;background:rgba(143,168,196,0.07);margin-bottom:10px';
+  card.innerHTML=`<div class="rlabel" style="color:#6a8caa">${isZh?'💙 支持你':'💙 You\'re not alone'}</div>
+<div class="rcard-title" style="font-size:15px">${isZh?'需要時，幫助就在這裡':'Help is here when you need it'}</div>
+<div class="rbody">${body}
+  <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
+    <a href="tel:1925" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px">
+      <span style="font-size:18px">🇹🇼</span>
+      <div><div style="font-size:13px;font-weight:700;font-family:'Quicksand','Noto Sans TC',sans-serif">1925</div><div style="font-size:11px;color:var(--muted)">台灣安心專線・24小時</div></div>
+    </a>
+    <a href="tel:988" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px">
+      <span style="font-size:18px">🇺🇸</span>
+      <div><div style="font-size:13px;font-weight:700;font-family:'Quicksand','Noto Sans TC',sans-serif">988</div><div style="font-size:11px;color:var(--muted)">US Suicide & Crisis Lifeline・24/7</div></div>
+    </a>
+  </div>
+</div>`;
+  const cards=document.getElementById('jCards');
+  cards.insertBefore(card,cards.firstChild);
+}
+
+// ── Journal history for continuity (Option C) ──
+function buildJournalHistory(){
+  const journals=getJournals();
+  if(!journals.length)return'';
+  const sevenDaysAgo=new Date(Date.now()-7*24*60*60*1000);
+  const lines=[];
+  for(const j of journals){
+    const d=parseDate(j.date);
+    const mk=j.analysis?.mood_key||'unknown';
+    const summary=j.analysis?.praise_title||'';
+    const dateStr=d.toLocaleDateString('en-CA');
+    if(d>=sevenDaysAgo){
+      const snippet=(j.text||'').slice(0,100);
+      const ellipsis=(j.text||'').length>100?'…':'';
+      lines.push(`[${dateStr}] mood:${mk} | ${summary} | "${snippet}${ellipsis}"`);
+    }else{
+      lines.push(`[${dateStr}] mood:${mk} | ${summary}`);
+    }
+  }
+  if(!lines.length)return'';
+  return`\n\nPAST JOURNAL HISTORY (chronological, use for emotional continuity — if user references past moods or events, use this context):\n${lines.reverse().join('\n')}`;
+}
+
+async function _runJournal(){
+  const text=document.getElementById('jInput').value.trim();
+  if(!text||text.length<10){const e=document.getElementById('jErr');e.textContent=t('j_err');e.style.display='block';return}
+  document.getElementById('jErr').style.display='none';
+  await _submitJournal();
+}
+
+async function _submitJournal(){
+  const text=document.getElementById('jInput').value.trim();
+  if(!text)return;
+  document.getElementById('jForm').style.display='none';
+  document.getElementById('jLoading').classList.add('on');
+
+  const history=buildJournalHistory();
+
+  const prompt=lang==='en'?
+`You are a warm, insightful emotional companion. The user wrote about their day.
+IMPORTANT: Reply entirely in English. Reply ONLY with valid JSON (no markdown, no extra text):
+{
+  "mood_key": one of: happy/touched/calm/excited/sad/hurt/anxious/angry/irritated,
+  "mood_label": "2-4 word mood description in English",
+  "mood_analysis": "Warm, insightful analysis of their emotional state, 2-3 sentences in English. If past journal history is provided, use it to note emotional continuity or changes.",
+  "praise_title": "Short praise title in English (max 8 words)",
+  "praise_body": "Genuine praise, 3-4 sentences in English, make them feel seen",
+  "feedback": "Gentle, constructive feedback, 2-3 sentences in English, encouraging tone",
+  "growth_title": "Growth tip title in English (max 6 words)",
+  "growth_tips": "2-3 specific actionable growth suggestions in English, each in a paragraph separated by newline"
+}${history}
+User's day: ${text}`
+:`你是一位溫暖有洞察力的心靈陪伴者。
+重要：請務必全程使用繁體中文回答，所有 JSON 的值都必須是繁體中文。
+只回覆有效 JSON（不要 markdown，不要其他文字）：
+{
+  "mood_key": 從以下選一個: happy/touched/calm/excited/sad/hurt/anxious/angry/irritated,
+  "mood_label": "2-4個字描述今日心情（繁體中文）",
+  "mood_analysis": "深度分析情緒狀態，2-3句，溫暖有洞察力（繁體中文）。若有過去日記歷史，可提及情緒延續或變化。",
+  "praise_title": "讚揚標題（10字以內，繁體中文）",
+  "praise_body": "真誠讚揚，3-4句，讓他感到被看見（繁體中文）",
+  "feedback": "溫和建設性回饋，2-3句，鼓勵語氣（繁體中文）",
+  "growth_title": "成長建議標題（8字以內，繁體中文）",
+  "growth_tips": "2-3個具體可行的成長建議，每個一段，用換行分隔（繁體中文）"
+}${history}
+使用者今天的記錄：${text}`;
+  try{
+    const data=await callMirumi(prompt);
+    const raw=data.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();
+    const d=JSON.parse(raw);
+    document.getElementById('jLoading').classList.remove('on');
+    renderJournalResults(d,text);
+    const crisisLevel=checkCSSRS(text);
+    if(crisisLevel>0)renderCrisisCard(crisisLevel);
+    saveJournal({id:Date.now(),date:new Date().toISOString(),text,analysis:d,lang});
+    const b=document.getElementById('jSaveBanner');b.textContent=t('j_saved');b.style.display='block';setTimeout(()=>b.style.display='none',3000);
+  }catch(e){
+    document.getElementById('jLoading').classList.remove('on');
+    document.getElementById('jForm').style.display='block';
+    if(e.message==='EXPIRED'||e.message==='INVALID_CODE')return;
+    const er=document.getElementById('jErr');
+    er.textContent=e.message==='DAILY_LIMIT'?t('limit_msg'):t('err_generic');
+    er.style.display='block';
+    console.error('runJournal error:',e);
+  }
+}
+
+function renderJournalResults(d,text){
+  const mk=d.mood_key||'calm';
+  const color=MOOD_COLORS[mk]||'#B0ADB5';
+  const banner=document.getElementById('jMoodBanner');
+  banner.style.background=`linear-gradient(135deg,${color}30,${color}18)`;
+  banner.style.borderColor=`${color}80`;
+  document.getElementById('jMoodEmoji').textContent=MOOD_EMOJIS[mk]||'🌸';
+  document.getElementById('jMoodLabel').textContent=d.mood_label||'';
+  document.getElementById('jMoodBody').textContent=d.mood_analysis||'';
+  document.getElementById('jCards').innerHTML=[
+    {type:'praise',label:t('j_praise'),title:d.praise_title,body:d.praise_body},
+    {type:'feedback',label:t('j_feedback'),body:d.feedback},
+    {type:'growth',label:t('j_growth'),title:d.growth_title,body:d.growth_tips},
+  ].map(c=>`<div class="rcard ${c.type}"><div class="rlabel">${c.label}</div>${c.title?`<div class="rcard-title">${c.title}</div>`:''}<div class="rbody">${c.body||''}</div></div>`).join('');
+  document.getElementById('jResults').classList.add('on');
+}
+
+function resetJournal(){
+  document.getElementById('jResults').classList.remove('on');
+  document.getElementById('jForm').style.display='block';
+  document.getElementById('jInput').value='';
+  document.getElementById('jCharHint').textContent=t('j_hint');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+
+
+// ── Archive ──
+let archiveTab='journal';
+function switchArchiveTab(tab){
+  archiveTab=tab;
+  document.getElementById('archTabJournal').classList.toggle('active',tab==='journal');
+  renderArchive(tab);
+}
+function renderArchive(tab){
+  const el=document.getElementById('archContent');
+  if(tab==='journal'){
+    const entries=getJournals();
+    if(!entries.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon"><svg width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="21" height="28" rx="5" fill="#a8907c"/><rect x="7" y="7" width="9" height="3.5" rx="1.75" fill="#fdf8f3"/><circle cx="26.5" cy="10" r="2" fill="#c8b09a"/><circle cx="26.5" cy="16" r="2" fill="#c8b09a"/><circle cx="26.5" cy="22" r="2" fill="#c8b09a"/></svg><div class="empty-txt">${t('no_j')}</div></div>`;return}
+    el.innerHTML='<div class="arch-list">'+entries.map((e,i)=>{
+      const d=parseDate(e.date);
+      const ds=d.toLocaleDateString(dloc(),{month:'short',day:'numeric',year:'numeric'});
+      const mk=e.analysis?.mood_key||'calm';
+      const color=MOOD_COLORS[mk]||'#B0ADB5';
+      const mnm=moodName(mk);
+      const emoji=MOOD_EMOJIS[mk]||'✦';
+      return `<div class="j-item" data-journal-id="${e.id}" style="animation-delay:${i*0.05}s">
+        <div class="j-item-top">
+          <div class="j-mood-pill" style="background:${color}30;border:1px solid ${color}70;color:${adjustColor(color)}">
+            <span>${emoji}</span><span>${mnm||''}</span>
+          </div>
+          <span class="j-date">${ds}</span>
+        </div>
+        <div class="j-summary">${e.analysis?.praise_title||''}</div>
+        <div class="j-preview">${e.text?.slice(0,80)||''}</div>
+        <div style="display:flex;justify-content:flex-end;margin-top:10px">
+          <button class="item-delete" data-del-journal="${e.id}">delete</button>
+        </div>
+      </div>`;
+    }).join('')+'</div>';
+    // Attach events after render
+    el.querySelectorAll('.j-item').forEach(item=>{
+      item.addEventListener('click',function(ev){
+        if(ev.target.closest('.item-delete'))return;
+        openJournalEntry(this.dataset.journalId);
+      });
+    });
+    el.querySelectorAll('[data-del-journal]').forEach(btn=>{
+      btn.addEventListener('click',function(ev){
+        ev.stopPropagation();
+        delJournal(this.dataset.delJournal);
+      });
+    });
+  }
+}
+
+function adjustColor(hex){
+  // darken hex slightly for text
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `rgb(${Math.max(0,r-60)},${Math.max(0,g-60)},${Math.max(0,b-60)})`;
+}
+
+function openJournalEntry(id){
+  const entry=getJournals().find(e=>String(e.id)===String(id));
+  if(!entry)return;
+  const d=parseDate(entry.date);
+  const ds=d.toLocaleDateString(dloc(),{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('modalDate').textContent=ds;
+  document.getElementById('modalOrig').textContent=entry.text||'';
+  const a=entry.analysis;
+  const labels=[t('j_praise'),t('j_feedback'),t('j_growth')];
+  const mk=a?.mood_key||'calm';const color=MOOD_COLORS[mk]||'#B0ADB5';
+  const mname=moodName(mk);
+  document.getElementById('modalCards').innerHTML=`
+    <div style="background:${color}25;border:1.5px solid ${color}60;border-radius:12px;padding:18px 20px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span style="font-size:28px">${MOOD_EMOJIS[mk]||'🌸'}</span><span style="font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;color:var(--accent)">${mname}</span></div>
+      <div style="font-size:13px;font-weight:300;color:var(--dim);line-height:1.85">${a?.mood_analysis||''}</div>
+    </div>`+
+    [['praise',labels[0],a?.praise_title,a?.praise_body],['feedback',labels[1],'',a?.feedback],['growth',labels[2],a?.growth_title,a?.growth_tips]].map(([type,label,title,body])=>`
+    <div class="rcard ${type}" style="margin-bottom:10px"><div class="rlabel">${label}</div>${title?`<div class="rcard-title">${title}</div>`:''}<div class="rbody">${body||''}</div></div>`).join('');
+  document.getElementById('modalOverlay').classList.add('on');
+}
+
+function closeModal(e){if(!e||e.target===document.getElementById('modalOverlay'))document.getElementById('modalOverlay').classList.remove('on');}
+
+// ── Delete ──
+function delJournal(id){
+  deleteJournal(id);
+  renderArchive('journal');
+}
+
+// ── Therapist Report Export ──
+function buildExportPayload(){
+  const journals=getJournals();
+  const MOOD_NAMES_EN_LOCAL={happy:'Happy',touched:'Touched',calm:'Calm',excited:'Excited',sad:'Sad',hurt:'Hurt',anxious:'Anxious',angry:'Angry',irritated:'Irritated'};
+  const toExportDate=s=>{
+    if(!s)return'';
+    if(String(s).length===10)return String(s);
+    const d=new Date(s);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  };
+  return{
+    exported_at:toExportDate(new Date().toISOString()),
+    user_label:'Anonymous',
+    journal_entries:journals.map(e=>({
+      date:toExportDate(e.date),
+      text:e.text||'',
+      mood_key:e.analysis?.mood_key||'calm',
+      mood_name:e.analysis?.mood_label||(MOOD_NAMES_EN_LOCAL[e.analysis?.mood_key]||'Calm'),
+      mood_analysis:e.analysis?.mood_analysis||'',
+      praise_title:e.analysis?.praise_title||'',
+      reframe:e.analysis?.feedback||'',
+      growth_question:e.analysis?.growth_tips||''
+    }))
+  };
+}
+function exportTherapistJSON(){
+  const payload=buildExportPayload();
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`mirumi-report-${payload.exported_at}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showExportBanner(t('arch_export_done'));
+}
+function showExportBanner(msg){
+  const banner=document.getElementById('exportBanner');
+  banner.textContent=msg;
+  banner.style.display='block';
+  setTimeout(()=>banner.style.display='none',3500);
+}
+
+// ── Home Recent ──
+function renderHomeRecent(){
+  const jEntries=getJournals().slice(0,2);
+  const combined=[
+    ...jEntries.map(e=>({type:'journal',date:parseDate(e.date),data:e})),
+  ].sort((a,b)=>b.date-a.date).slice(0,4);
+
+  const el=document.getElementById('homeRecentList');
+  if(!combined.length){el.innerHTML=`<div style="font-size:12px;color:var(--muted);text-align:center;padding:20px;font-family:'Quicksand','Noto Sans TC',sans-serif">✦</div>`;return}
+  el.innerHTML='<div class="recent-list">'+combined.map(item=>{
+    if(item.type==='journal'){
+      const e=item.data;const mk=e.analysis?.mood_key||'calm';const color=MOOD_COLORS[mk];
+      const ds=item.date.toLocaleDateString(dloc(),{month:'short',day:'numeric'});
+      return `<div class="recent-item" onclick="showPage('archive');switchArchiveTab('journal')">
+        <div class="ri-mood-dot" style="background:${color}"></div>
+        <div class="ri-info"><div class="ri-title">${e.analysis?.praise_title||'Journal entry'}</div><div class="ri-meta">${MOOD_EMOJIS[mk]} ${moodName(mk)}</div></div>
+        <div class="ri-date">${ds}</div>
+      </div>`;
+    }
+  }).join('')+'</div>';
+}
+
+// ── Mood Flower Chart ──
+function renderMoodFlower(){
+  const wrap=document.getElementById('moodFlowerWrap');
+  if(!wrap)return;
+  const allEntries=getJournals();
+  if(!allEntries.length){
+    wrap.innerHTML=`<div class="mood-flower-wrap"><div class="mood-flower-title">${t('mf_title')}</div><div class="mood-flower-empty">${t('mf_empty')}</div></div>`;
+    return;
+  }
+  // Sort oldest → newest for chronological left-to-right
+  const entries=[...allEntries].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const n=entries.length;
+
+  // Valence scores: higher = more positive
+  const VALENCE={happy:92,touched:80,excited:88,calm:70,tired:38,sad:22,hurt:18,anxious:28,angry:12,irritated:20};
+
+  // Chart geometry
+  const PL=44,PR=18,PT=18,PB=52; // padding left/right/top/bottom
+  const CW=Math.max(n*72,320), CH=130;
+  const SVG_W=PL+CW+PR, SVG_H=PT+CH+PB;
+
+  const pts=entries.map((e,i)=>{
+    const mk=e.analysis?.mood_key||'calm';
+    const v=VALENCE[mk]??50;
+    const x=n===1 ? PL+CW/2 : PL+(i/(n-1))*CW;
+    const y=PT+CH-(v/100)*CH;
+    return {x,y,mk,v,date:e.date,col:MOOD_COLORS[mk]||'#B0ADB5',lbl:moodName(mk)};
+  });
+
+  // Smooth bezier path
+  function curvePath(p){
+    if(p.length===1)return `M${p[0].x.toFixed(1)},${p[0].y.toFixed(1)}`;
+    let d=`M${p[0].x.toFixed(1)},${p[0].y.toFixed(1)}`;
+    for(let i=0;i<p.length-1;i++){
+      const dx=(p[i+1].x-p[i].x)*0.42;
+      d+=` C${(p[i].x+dx).toFixed(1)},${p[i].y.toFixed(1)} ${(p[i+1].x-dx).toFixed(1)},${p[i+1].y.toFixed(1)} ${p[i+1].x.toFixed(1)},${p[i+1].y.toFixed(1)}`;
+    }
+    return d;
+  }
+  const linePath=curvePath(pts);
+  const areaPath=`${linePath} L${pts[n-1].x.toFixed(1)},${(PT+CH).toFixed(1)} L${pts[0].x.toFixed(1)},${(PT+CH).toFixed(1)} Z`;
+
+  // Horizontal guide lines
+  const guides=[{pct:75,lbl:t('mf_better')},{pct:50,lbl:''},{pct:25,lbl:t('mf_harder')}].map(({pct,lbl})=>{
+    const gy=(PT+CH-(pct/100)*CH).toFixed(1);
+    return `<line x1="${PL}" y1="${gy}" x2="${PL+CW}" y2="${gy}" stroke="var(--border)" stroke-width="0.8" stroke-dasharray="4,5"/>
+      ${lbl?`<text x="${(PL-6).toFixed(1)}" y="${(+gy+3.5).toFixed(1)}" text-anchor="end" font-size="8.5" fill="var(--muted)" font-family="Quicksand,sans-serif">${lbl}</text>`:''}`;
+  }).join('');
+
+  // Dots + labels
+  const dots=pts.map(p=>{
+    const _pd=p.date&&p.date.length===10?new Date(p.date+'T12:00:00'):new Date(p.date);const ds=_pd.toLocaleDateString(dloc(),{month:'short',day:'numeric'});
+    return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="6.5" fill="${p.col}" stroke="#fdf8f3" stroke-width="2.2"/>
+      <text x="${p.x.toFixed(1)}" y="${(PT+CH+16).toFixed(1)}" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="Quicksand,sans-serif">${ds}</text>
+      <text x="${p.x.toFixed(1)}" y="${(PT+CH+28).toFixed(1)}" text-anchor="middle" font-size="9.5" fill="${p.col}" font-family="Quicksand,sans-serif" font-weight="700">${p.lbl}</text>`;
+  }).join('');
+
+  // Legend counts
+  const counts={};
+  entries.forEach(e=>{const mk=e.analysis?.mood_key;if(mk)counts[mk]=(counts[mk]||0)+1;});
+  const legendItems=Object.entries(counts).map(([mk,c])=>
+    `<div class="mfl-item"><div class="mfl-dot" style="background:${MOOD_COLORS[mk]||'#ccc'}"></div>${moodName(mk)} <span style="color:var(--accent);margin-left:2px;font-weight:700">×${c}</span></div>`
+  ).join('');
+
+  wrap.innerHTML=`<div class="mood-flower-wrap">
+    <div class="mood-flower-title">${t('mf_title')} · ${n} ${t('entries')}</div>
+    <div style="overflow-x:auto;width:100%;padding-bottom:4px">
+      <svg width="${SVG_W}" height="${SVG_H}" viewBox="0 0 ${SVG_W} ${SVG_H}" xmlns="http://www.w3.org/2000/svg" style="display:block;min-width:${SVG_W}px">
+        <defs>
+          <linearGradient id="moodAreaGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#C4788A" stop-opacity="0.22"/>
+            <stop offset="100%" stop-color="#C4788A" stop-opacity="0.02"/>
+          </linearGradient>
+        </defs>
+        ${guides}
+        <path d="${areaPath}" fill="url(#moodAreaGrad)"/>
+        <path d="${linePath}" fill="none" stroke="#C4788A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        ${dots}
+      </svg>
+    </div>
+    <div class="mood-flower-legend" style="margin-top:12px">${legendItems||`<span class="mood-flower-empty">${t('mf_none')}</span>`}</div>
+  </div>`;
+}
+
+function pickLang(l){
+  lang=l;
+  localStorage.setItem('mirumi_lang',lang);
+  document.getElementById('langToggleBtn').textContent=lang==='zh'?'EN':'中';
+  applyLang();
+  document.getElementById('landingOverlay').style.display='none';
+  if(!getAccessCode()){showCodeOverlay();}
+  else if(trialExpired()){showExpired();}
+  updateTrialPill();
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('langToggleBtn').textContent=lang==='zh'?'EN':'中';
+  applyLang();setGreeting();showPage('home');
+  // Show language landing on very first visit (no lang stored)
+  if(!localStorage.getItem('mirumi_lang')){
+    document.getElementById('landingOverlay').style.display='flex';
+  } else if(!getAccessCode()){
+    showCodeOverlay();
+  } else if(trialExpired()){
+    showExpired();
+  }
+  updateTrialPill();
+});
+
+// ── BACKUP & RESTORE ────────────────────────────────────────────────────
+function backupData(){
+  const data={
+    version:1,
+    backed_up:new Date().toISOString().slice(0,10),
+    mirumi_journal:localStorage.getItem('mirumi_journal')||'[]',
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`mirumi-backup-${data.backed_up}.json`;a.click();
+  URL.revokeObjectURL(url);
+  showBackupMsg('✓ Backup downloaded','var(--green)');
+}
+function triggerRestore(){document.getElementById('restoreFileInput').click();}
+function restoreData(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(data.mirumi_journal) localStorage.setItem('mirumi_journal',data.mirumi_journal);
+      showBackupMsg('✓ Restored — reloading…','var(--green)');
+      setTimeout(()=>location.reload(),1200);
+    }catch(_){showBackupMsg('✗ Invalid backup file','#C45050');}
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+function showBackupMsg(msg,color){
+  const el=document.getElementById('backupMsg');
+  el.textContent=msg;el.style.color=color;el.style.display='block';
+  setTimeout(()=>el.style.display='none',3200);
+}
+</script>
+
+<!-- ── MOBILE BOTTOM TAB BAR ── -->
+<nav class="mobile-tabs" id="mobileTabs">
+  <button class="mobile-tab active" id="mtHome" onclick="showPage('home')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 21V12h6v9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    <span data-t="nav_home">Home</span>
+  </button>
+  <button class="mobile-tab" id="mtJournal" onclick="showPage('journal')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="13" height="18" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 7h6M8 11h6M8 15h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M17 6h1a2 2 0 012 2v11a2 2 0 01-2 2H8" stroke="currentColor" stroke-width="1.8"/></svg>
+    <span data-t="nav_journal">Journal</span>
+  </button>
+  <button class="mobile-tab" id="mtArchive" onclick="showPage('archive')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="5" rx="1" stroke="currentColor" stroke-width="1.8"/><path d="M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9" stroke="currentColor" stroke-width="1.8"/><path d="M10 13h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <span data-t="nav_archive">Archive</span>
+  </button>
+</nav>
+<input type="file" id="restoreFileInput" accept=".json" style="display:none" onchange="restoreData(event)">
+</body>
+</html>
