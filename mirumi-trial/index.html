@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mirumi</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><g transform='translate(16,16)'><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8'/><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8' transform='rotate(72)'/><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8' transform='rotate(144)'/><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8' transform='rotate(216)'/><ellipse cx='0' cy='-7' rx='4' ry='6.5' fill='%23D4A0A8' transform='rotate(288)'/><circle cx='0' cy='0' r='3.5' fill='%23C4788A'/></g></svg>" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mirumi">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#fdf8f3">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Sans:wght@300;400;500&family=Quicksand:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -403,7 +408,7 @@ body::before{
     </div>
 <span id="trialPill" style="display:none;align-items:center;padding:0 12px;height:34px;border-radius:20px;border:1.5px solid var(--border);font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;color:var(--accent);flex-shrink:0;white-space:nowrap"></span>
     <button id="langToggleBtn" onclick="toggleLang()" title="Language" style="background:none;border:1.5px solid var(--border);border-radius:20px;padding:0 12px;height:34px;cursor:pointer;font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:12px;font-weight:700;color:var(--muted);flex-shrink:0;transition:all 0.2s" onmouseover="this.style.borderColor='var(--border-hi)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">中</button>
-    <button id="settingsBtn" onclick="openSettings()" title="Settings" style="background:none;border:1.5px solid var(--border);border-radius:50%;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px;transition:all 0.2s;position:relative;flex-shrink:0" onmouseover="this.style.borderColor='var(--border-hi)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙</button>
+    <button id="settingsBtn" onclick="openSettings()" title="Settings" style="background:none;border:1.5px solid var(--border);border-radius:50%;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all 0.2s;position:relative;flex-shrink:0" onmouseover="this.style.borderColor='var(--border-hi)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
   </div>
 </nav>
 
