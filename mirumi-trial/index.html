@@ -865,7 +865,18 @@ function showPage(name){
 // ── Journal ──
 document.getElementById('jInput').addEventListener('input',function(){
   const n=this.value.length;
-  document.getElementById('jCharHint').textContent=n>0?(lang==='zh'?`已寫 ${n} 字`:`${n} characters`):t('j_hint');
+  const hint=document.getElementById('jCharHint');
+  if(n===0){hint.textContent=t('j_hint');hint.style.color='';return;}
+  if(n>3500){
+    hint.textContent=lang==='zh'?`已寫 ${n} 字・快到上限囉，請濃縮一下`:`${n} chars · approaching limit, try condensing`;
+    hint.style.color='#c0594a';
+  }else if(n>2000){
+    hint.textContent=lang==='zh'?`已寫 ${n} 字・寫得很詳細！`:`${n} chars · that's a detailed entry!`;
+    hint.style.color='#b08040';
+  }else{
+    hint.textContent=lang==='zh'?`已寫 ${n} 字`:`${n} characters`;
+    hint.style.color='';
+  }
 });
 
 // ── Consent ──
