@@ -507,8 +507,8 @@ body::before{
   <div id="jForm">
     <div class="field">
       <label class="fl" for="jInput"><span>✦</span><span data-t="j_fl1">What happened today?</span></label>
-      <textarea class="ftx" id="jInput" rows="5" data-placeholder-t="j_ph1"></textarea>
-      <div class="fhint" id="jCharHint" data-t="j_hint">Write as much as you like</div>
+      <textarea class="ftx" id="jInput" rows="5" data-placeholder-t="j_ph1" maxlength="4000"></textarea>
+      <div class="fhint" id="jCharHint">Write as much as you like · 0 / 4,000</div>
     </div>
     <button class="go-btn" onclick="runJournal()" data-t="j_btn">Let today be seen →</button>
     <div class="err" id="jErr"></div>
@@ -866,15 +866,14 @@ function showPage(name){
 document.getElementById('jInput').addEventListener('input',function(){
   const n=this.value.length;
   const hint=document.getElementById('jCharHint');
-  if(n===0){hint.textContent=t('j_hint');hint.style.color='';return;}
   if(n>3500){
-    hint.textContent=lang==='zh'?`已寫 ${n} 字・快到上限囉，請濃縮一下`:`${n} chars · approaching limit, try condensing`;
+    hint.textContent=lang==='zh'?`${n} / 4,000 · 快到上限囉，請濃縮一下`:`${n} / 4,000 · approaching limit, try condensing`;
     hint.style.color='#c0594a';
   }else if(n>2000){
-    hint.textContent=lang==='zh'?`已寫 ${n} 字・寫得很詳細！`:`${n} chars · that's a detailed entry!`;
+    hint.textContent=lang==='zh'?`${n} / 4,000 · 寫得很詳細！`:`${n} / 4,000 · that's a detailed entry!`;
     hint.style.color='#b08040';
   }else{
-    hint.textContent=lang==='zh'?`已寫 ${n} 字`:`${n} characters`;
+    hint.textContent=lang==='zh'?`${n} / 4,000`:`${n} / 4,000`;
     hint.style.color='';
   }
 });
@@ -1052,7 +1051,8 @@ function resetJournal(){
   document.getElementById('jResults').classList.remove('on');
   document.getElementById('jForm').style.display='block';
   document.getElementById('jInput').value='';
-  document.getElementById('jCharHint').textContent=t('j_hint');
+  document.getElementById('jCharHint').textContent=lang==='zh'?'想寫多少都行 · 0 / 4,000':'Write as much as you like · 0 / 4,000';
+  document.getElementById('jCharHint').style.color='';
   window.scrollTo({top:0,behavior:'instant'});
 }
 
