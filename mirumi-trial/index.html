@@ -64,7 +64,7 @@ body::before{
   background:rgba(253,248,243,0.92);backdrop-filter:blur(16px);
   border-bottom:1px solid var(--border);
 }
-.nav-logo{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent);letter-spacing:0.01em}
+.nav-logo{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:20px;font-weight:700;color:var(--accent);letter-spacing:0.04em}
 .nav-logo span{font-size:16px}
 .nav-pills{display:flex;gap:4px}
 .nav-pill{
@@ -115,10 +115,10 @@ body::before{
   letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;
 }
 .home-title{
-  font-family:'DM Serif Display',serif;font-size:clamp(38px,6vw,56px);
-  color:var(--text);line-height:1.1;margin-bottom:12px;
+  font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:clamp(38px,6vw,56px);
+  font-weight:700;color:var(--text);line-height:1.1;margin-bottom:12px;
 }
-.home-title em{font-style:italic;color:var(--accent)}
+.home-title em{font-style:normal;font-weight:700;color:var(--accent)}
 .home-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 36px}
 
 /* Big nav cards */
@@ -133,7 +133,7 @@ body::before{
 .home-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 10px 36px var(--shadow-md)}
 .home-card:hover::after{opacity:1}
 .hc-icon{margin-bottom:14px;display:block;line-height:1}
-.hc-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:6px}
+.hc-title{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:22px;color:var(--text);margin-bottom:6px}
 .hc-desc{font-size:12px;color:var(--muted);line-height:1.6}
 .hc-arrow{position:absolute;right:18px;bottom:18px;color:var(--border-hi);font-size:16px;transition:all 0.2s}
 .home-card:hover .hc-arrow{color:var(--accent);transform:translateX(3px)}
@@ -162,8 +162,8 @@ body::before{
   background:var(--accent-soft);border:1.5px solid var(--accent);
   padding:4px 14px;border-radius:20px;margin-bottom:16px;
 }
-.ph-title{font-family:'DM Serif Display',serif;font-size:36px;color:var(--text);line-height:1.15;margin-bottom:8px}
-.ph-title em{font-style:italic;color:var(--accent)}
+.ph-title{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:36px;font-weight:700;color:var(--text);line-height:1.15;margin-bottom:8px}
+.ph-title em{font-style:normal;font-weight:700;color:var(--accent)}
 .ph-sub{font-size:13px;color:var(--muted);line-height:1.6}
 
 .field{margin-bottom:20px}
@@ -183,8 +183,8 @@ body::before{
 .go-btn{
   width:100%;padding:15px;
   background:var(--accent);color:#fff;border:none;border-radius:50px;
-  font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;
-  letter-spacing:0.04em;cursor:pointer;transition:all 0.22s;margin-top:8px;
+  font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:16px;font-weight:700;
+  letter-spacing:0.06em;cursor:pointer;transition:all 0.22s;margin-top:8px;
   box-shadow:0 4px 20px var(--accent-glow);
 }
 .go-btn:hover{background:#b8733d;transform:translateY(-1px);box-shadow:0 8px 28px var(--accent-glow)}
@@ -210,7 +210,7 @@ body::before{
 .mood-banner::before{content:'';position:absolute;inset:0;opacity:0.15;background:radial-gradient(ellipse at top right,white,transparent)}
 .mood-banner-top{display:flex;align-items:center;gap:14px;margin-bottom:10px}
 .mood-emoji-big{font-size:38px;line-height:1}
-.mood-name{font-family:'DM Serif Display',serif;font-size:24px;font-style:italic}
+.mood-name{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:24px;font-weight:700}
 .mood-body{font-size:13px;font-weight:300;line-height:1.85;opacity:0.85;white-space:pre-line}
 
 /* Result cards */
@@ -229,7 +229,7 @@ body::before{
   font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:9px;font-weight:700;
   letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;
 }
-.rcard-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:8px;line-height:1.3}
+.rcard-title{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:18px;color:var(--text);margin-bottom:8px;line-height:1.3}
 .rbody{font-size:13px;font-weight:300;color:var(--dim);line-height:1.9;white-space:pre-line;letter-spacing:0.02em}
 
 /* Trend bar */
@@ -323,7 +323,7 @@ body::before{
 .p-item:hover{border-color:var(--accent);box-shadow:0 4px 20px var(--shadow);transform:translateY(-1px)}
 .p-item-top{display:flex;align-items:center;gap:12px;margin-bottom:8px;padding-right:56px}
 .p-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--accent-soft);border:1.5px solid var(--accent);flex-shrink:0}
-.p-name{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text)}
+.p-name{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:18px;color:var(--text)}
 .p-cat{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:10px;color:var(--muted);font-weight:600;background:var(--bg2);padding:3px 10px;border-radius:10px;border:1px solid var(--border)}
 .p-last{font-size:11px;color:var(--muted);margin-bottom:5px}
 .p-preview{font-size:11px;color:var(--muted);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -342,7 +342,7 @@ body::before{
 .back-btn:hover{border-color:var(--accent);color:var(--accent)}
 .detail-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1.5px solid var(--border)}
 .detail-avatar{width:52px;height:52px;border-radius:50%;background:var(--accent-soft);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px}
-.detail-name{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text)}
+.detail-name{font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:28px;color:var(--text)}
 .detail-meta{font-size:11px;color:var(--muted);margin-top:3px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:600}
 
 .timeline{display:flex;flex-direction:column;gap:0}
@@ -411,7 +411,7 @@ body::before{
 <div id="consentOverlay" style="display:none;position:fixed;inset:0;background:rgba(61,46,34,0.45);backdrop-filter:blur(6px);z-index:300;align-items:center;justify-content:center">
   <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:22px;padding:36px 30px;width:min(440px,92vw);box-shadow:0 20px 60px rgba(61,46,34,0.18)">
     <div style="font-size:28px;margin-bottom:12px;text-align:center">🔒</div>
-    <div style="font-family:'DM Serif Display',serif;font-size:21px;color:var(--text);margin-bottom:8px;text-align:center" data-t="consent_title">Before you share</div>
+    <div style="font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:21px;color:var(--text);margin-bottom:8px;text-align:center" data-t="consent_title">Before you share</div>
     <div style="font-size:13px;color:var(--dim);line-height:1.75;margin-bottom:6px" data-t="consent_p1_html">
       When you submit a journal entry, that text is sent to <strong style="color:var(--text)">Anthropic's API</strong> so Claude can analyze it. This is how the emotional insights are generated.
     </div>
@@ -431,7 +431,7 @@ body::before{
 <!-- Settings Modal -->
 <div id="settingsOverlay" onclick="if(event.target===this)closeSettings()" style="display:none;position:fixed;inset:0;background:rgba(61,46,34,0.35);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center">
   <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:32px 28px;width:min(420px,90vw);box-shadow:0 8px 32px rgba(61,46,34,0.12)">
-    <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:14px" data-t="set_title">Settings</div>
+    <div style="font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:22px;color:var(--text);margin-bottom:14px" data-t="set_title">Settings</div>
     <div style="background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px">
       <div style="font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:6px" data-t="set_code_label">Your invitation code</div>
       <div id="trialCodeTxt" style="font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.08em;color:var(--accent)"></div>
@@ -543,7 +543,7 @@ body::before{
   <!-- ── Export Report ── -->
   <div style="margin-top:40px;padding:24px 26px;background:rgba(200,132,90,0.06);border:1.5px solid var(--border);border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
     <div>
-      <div style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);margin-bottom:4px" data-t="arch_dl_title">Download Report</div>
+      <div style="font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:17px;color:var(--text);margin-bottom:4px" data-t="arch_dl_title">Download Report</div>
       <div style="font-size:11px;color:var(--muted);line-height:1.6;max-width:380px" data-t="arch_dl_desc">Export your journal data as a JSON file</div>
     </div>
     <button onclick="exportTherapistJSON()" style="padding:12px 24px;background:var(--accent);color:#fff;border:none;border-radius:50px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;box-shadow:0 4px 16px var(--accent-glow);letter-spacing:0.04em" onmouseover="this.style.background='#b8733d'" onmouseout="this.style.background='var(--accent)'">
@@ -571,7 +571,7 @@ body::before{
 <!-- ── Language landing page ── -->
 <div id="landingOverlay" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:500;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:40px">
   <div style="animation:fadeUp 0.7s ease both">
-    <div style="font-family:'DM Serif Display',serif;font-size:clamp(36px,8vw,64px);color:var(--accent);letter-spacing:0.01em;display:flex;align-items:center;gap:16px;justify-content:center">
+    <div style="font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:clamp(36px,8vw,64px);color:var(--accent);letter-spacing:0.01em;display:flex;align-items:center;gap:16px;justify-content:center">
       <span style="font-size:0.45em;opacity:0.7">✦</span>
       Mirumi
       <span style="font-size:0.45em;opacity:0.7">✦</span>
@@ -588,7 +588,7 @@ body::before{
 <div id="codeOverlay" style="display:none;position:fixed;inset:0;background:rgba(61,46,34,0.5);backdrop-filter:blur(8px);z-index:400;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:22px;padding:38px 32px;width:min(420px,92vw);box-shadow:0 20px 60px rgba(61,46,34,0.2);text-align:center">
     <div style="margin-bottom:14px"><svg width="52" height="52" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(16,16)"><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(72)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(144)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(216)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(288)"/><circle cx="0" cy="0" r="3.5" fill="#C4788A"/></g></svg></div>
-    <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:8px" data-t="code_title">Welcome to Mirumi</div>
+    <div style="font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:22px;color:var(--text);margin-bottom:8px" data-t="code_title">Welcome to Mirumi</div>
     <div style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:20px" data-t="code_sub">Enter your invitation code to start your free 7-day journey.</div>
     <input id="codeInput" type="text" placeholder="MIRUMI-XXXX" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:13px 14px;font-size:14px;text-align:center;letter-spacing:0.08em;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:700;background:var(--bg);color:var(--text);outline:none;margin-bottom:14px;text-transform:uppercase" onkeydown="if(event.key==='Enter')submitCode()"/>
     <button onclick="submitCode()" id="codeBtn" style="width:100%;background:var(--accent);color:#fff;border:none;border-radius:12px;padding:14px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:700;font-size:14px;cursor:pointer;letter-spacing:0.04em" data-t="code_btn">Start my 7 days →</button>
@@ -600,7 +600,7 @@ body::before{
 <div id="expiredOverlay" style="display:none;position:fixed;inset:0;background:rgba(61,46,34,0.55);backdrop-filter:blur(8px);z-index:400;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:22px;padding:38px 32px;width:min(440px,92vw);box-shadow:0 20px 60px rgba(61,46,34,0.2);text-align:center">
     <div style="font-size:30px;margin-bottom:10px">💜</div>
-    <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:8px" data-t="exp_title">Your 7 days are complete</div>
+    <div style="font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:22px;color:var(--text);margin-bottom:8px" data-t="exp_title">Your 7 days are complete</div>
     <div style="font-size:13px;color:var(--dim);line-height:1.75;margin-bottom:22px" data-t="exp_body">Thank you for spending this week with Mirumi. Your journals stay saved in this browser. One last thing — please share your feedback. It means the world.</div>
     <a id="feedbackLink" href="#" target="_blank" style="display:block;background:var(--accent);color:#fff;border-radius:12px;padding:14px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:700;font-size:14px;text-decoration:none;letter-spacing:0.04em" data-t="exp_btn">Share my feedback →</a>
     <button onclick="backupData()" style="display:block;width:100%;margin-top:10px;background:none;border:1.5px solid var(--border);border-radius:12px;padding:13px;font-family:'Quicksand','Noto Sans TC',sans-serif;font-weight:600;font-size:13px;color:var(--dim);cursor:pointer" data-t="exp_dl_btn">Download my journals</button>
@@ -736,7 +736,7 @@ const T={
     exp_title:'你的 7 天旅程完成了',exp_body:'謝謝你這一週與 Mirumi 同行。你的日記仍保存在這個瀏覽器裡。最後一件小事——請分享你的使用回饋，這對我們意義重大。',exp_btn:'分享我的回饋 →',exp_dl_btn:'下載我的日記',exp_new_code:'輸入其他邀請碼',
     limit_msg:'今天的分析次數已用完，明天見 🌙',err_generic:'發生問題，請再試一次',
     set_title:'設定',set_code_label:'你的邀請碼',set_close:'關閉',
-    mf_title:'你的情緒旅程',mf_better:'較好',mf_harder:'較難',mf_empty:'開始寫日記，看見你的心情流動 🌸',mf_none:'還沒有情緒分析',
+    mf_title:'你的情緒旅程',mf_better:'較好',mf_harder:'較難',mf_empty:'開始寫日記，看見你的心情流動',mf_none:'還沒有情緒分析',
     consent_title:'在分享之前',
     consent_p1_html:'當你送出日記時，這段文字會傳送到 <strong style="color:var(--text)">Anthropic 的 API</strong>，由 Claude 進行分析——這就是情緒洞察的來源。',
     consent_p2_html:'<strong style="color:var(--text)">這代表：</strong>你的記錄<em>不會</em>儲存在任何 Mirumi 伺服器上，但會傳送給 Anthropic 處理。Anthropic 的 API 不會使用你的資料訓練模型。<a href="https://www.anthropic.com/privacy" target="_blank" style="color:var(--accent);text-decoration:none">閱讀 Anthropic 的隱私政策 →</a>',
@@ -753,7 +753,7 @@ const T={
     exp_title:'Your 7 days are complete',exp_body:'Thank you for spending this week with Mirumi. Your journals stay saved in this browser. One last thing — please share your feedback. It means the world.',exp_btn:'Share my feedback →',exp_dl_btn:'Download my journals',exp_new_code:'Enter a different code',
     limit_msg:"You've reached today's limit — see you tomorrow 🌙",err_generic:'Something went wrong. Please try again.',
     set_title:'Settings',set_code_label:'Your invitation code',set_close:'Close',
-    mf_title:'Your Emotional Journey',mf_better:'better',mf_harder:'harder',mf_empty:'Start journaling to see your mood flow 🌸',mf_none:'No moods analyzed yet',
+    mf_title:'Your Emotional Journey',mf_better:'better',mf_harder:'harder',mf_empty:'Start journaling to see your mood flow',mf_none:'No moods analyzed yet',
     consent_title:'Before you share',
     consent_p1_html:`When you submit a journal entry, that text is sent to <strong style="color:var(--text)">Anthropic's API</strong> so Claude can analyze it. This is how the emotional insights are generated.`,
     consent_p2_html:`<strong style="color:var(--text)">What this means:</strong> Your entries are <em>not</em> stored on any Mirumi server. However, they do travel to Anthropic for processing. Anthropic's API does not use your data to train models. <a href="https://www.anthropic.com/privacy" target="_blank" style="color:var(--accent);text-decoration:none">Read Anthropic's privacy policy →</a>`,
@@ -1102,7 +1102,7 @@ function openJournalEntry(id){
   const mname=moodName(mk);
   document.getElementById('modalCards').innerHTML=`
     <div style="background:${color}25;border:1.5px solid ${color}60;border-radius:12px;padding:18px 20px;margin-bottom:12px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span style="font-size:28px">${MOOD_EMOJIS[mk]||'🌸'}</span><span style="font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;color:var(--accent)">${mname}</span></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span style="font-size:28px">${MOOD_EMOJIS[mk]||'🌸'}</span><span style="font-family:'Quicksand','Noto Sans TC',sans-serif;font-size:18px;font-weight:700;color:var(--accent)">${mname}</span></div>
       <div style="font-size:13px;font-weight:300;color:var(--dim);line-height:1.85">${a?.mood_analysis||''}</div>
     </div>`+
     [['praise',labels[0],a?.praise_title,a?.praise_body],['feedback',labels[1],'',a?.feedback],['growth',labels[2],a?.growth_title,a?.growth_tips]].map(([type,label,title,body])=>`
@@ -1189,7 +1189,8 @@ function renderMoodFlower(){
   if(!wrap)return;
   const allEntries=getJournals();
   if(!allEntries.length){
-    wrap.innerHTML=`<div class="mood-flower-wrap"><div class="mood-flower-title">${t('mf_title')}</div><div class="mood-flower-empty">${t('mf_empty')}</div></div>`;
+    const flowerSvg=`<svg width="16" height="16" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;margin-left:5px"><g transform="translate(16,16)"><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(72)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(144)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(216)"/><ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="#D4A0A8" transform="rotate(288)"/><circle cx="0" cy="0" r="3.5" fill="#C4788A"/></g></svg>`;
+    wrap.innerHTML=`<div class="mood-flower-wrap"><div class="mood-flower-title">${t('mf_title')}</div><div class="mood-flower-empty">${t('mf_empty')}${flowerSvg}</div></div>`;
     return;
   }
   // Sort oldest → newest for chronological left-to-right
